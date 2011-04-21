@@ -197,7 +197,7 @@ class WebDriver_WebElement {
       "xoffset" => $right,
       "yoffset" => $down,
     );
-    $this->driver_execute("POST", "/session/:sessionId/moveto", $payload);
+    $this->driver->execute("POST", "/session/:sessionId/moveto", $payload);
   }
   
   /********************************************************************

@@ -88,12 +88,13 @@ class WebDriver_Driver {
     $full_url = $this->server_url . $relative_url;
     $response = WebDriver::Curl($http_type, $full_url, $payload);
     if (isset($response['body'])) {
-      $this->check_response_status($response['body'], $payload);
+      $command_info = $http_type . " - " . $full_url . " - " . print_r($payload, true);
+      $this->check_response_status($response['body'], $command_info);
     }
     return $response;
   }
   
-  private function check_response_status($body, $payload) {
+  private function check_response_status($body, $command_info) {
     $array = json_decode(trim($body), true);
     if (!is_null($array)) {
       $response_status_code = $array["status"];
@@ -102,11 +103,11 @@ class WebDriver_Driver {
       }
       if ($response_status_code != 0) {
         $message = $response_status_code . " - " . self::$status_codes[$response_status_code][0] . " - " . self::$status_codes[$response_status_code][1] . "\n";
-        $message .= "Payload: " . print_r($payload, true) . "\n";
+        $message .= "Command: $command_info\n";
         if (isset($array['value']['message'])) {
-          $message .= "Message: " . $array['value']['message'] . "\n";
+          $message .= "Message: " . $array['value']['message'];
         } else {
-          $message .= "Response: " . $body . "\n";
+          $message .= "Response: " . $body;
         }
         throw new Exception($message);
       }

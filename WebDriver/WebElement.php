@@ -149,9 +149,9 @@ class WebDriver_WebElement {
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/hover
-  // Not supported as of Selenium 2.0b3
   public function hover() {
-    $this->execute("POST", "/hover");
+    // $this->execute("POST", "/hover"); // Not supported as of Selenium 2.0rc3
+    $this->move_cursor_to_center(); // Workaround until /hover is implemented
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/selected

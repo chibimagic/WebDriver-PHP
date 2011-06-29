@@ -3,6 +3,7 @@
 class WebDriver_Driver {
   protected $session_id;
   protected $server_url;
+  protected $browser;
   private static $status_codes = array(
     0 => array("Success", " The command executed successfully."),
     7 => array("NoSuchElement", " An element could not be located on the page using the given search parameters."),
@@ -23,6 +24,7 @@ class WebDriver_Driver {
   
   protected function __construct($server_url, $capabilities) {
     $this->server_url = $server_url;
+    $this->browser = $capabilities['browserName'];
     
     $payload = array("desiredCapabilities" => $capabilities);
     $response = $this->execute("POST", "/session", $payload);
@@ -313,21 +315,25 @@ class WebDriver_Driver {
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/window
-  public function select_window($window_title) {
+  // IE appends the anchor tag to the window title, but only when it's done loading
+  // Example: $driver->select_window("My Cool Page", "#chapter7") finds the window called "My Cool Page#chapter7" or "My Cool Page" in IE, and "My Cool Page" in all other browsers
+  public function select_window($window_title, $ie_hash = '') {
     $all_window_handles = $this->get_all_window_handles();
     $all_titles = array();
     $current_title = "";
+    $found_window = false;
     foreach ($all_window_handles as $window_handle) {
       $payload = array("name" => $window_handle);
       $this->execute("POST", "/session/:sessionId/window", $payload);
       $current_title = $this->get_title();
       $all_titles[] = $current_title;
-      if ($current_title == $window_title) {
+      if ($current_title == $window_title || ($this->browser == 'internet explorer' && $current_title == $window_title . $ie_hash)) {
+        $found_window = true;
         break;
       }
     }
-    if ($current_title != $window_title) {
-      throw new Exception("Could not find window with title <$window_title>. Found " . count($all_titles) . " windows: " . implode("; ", $all_titles));
+    if (!$found_window) {
+      throw new Exception("Could not find window with title <$window_title> and optional hash <$ie_hash>. Found " . count($all_titles) . " windows: " . implode("; ", $all_titles));
     }
   }
   
@@ -486,8 +492,14 @@ class WebDriver_Driver {
     PHPUnit_Framework_Assert::assertEquals($expected_url, $this->get_url(), "Failed asserting that URL is <$expected_url>.");
   }
   
-  public function assert_title($expected_title) {
-    PHPUnit_Framework_Assert::assertEquals($expected_title, $this->get_title(), "Failed asserting that title is <$expected_title>.");
+  // IE appends the anchor tag to the window title, but only when it's done loading
+  // Example: $driver->assert_title("My Cool Page", "#chapter7") asserts that the page title is "My Cool Page#chapter7" in IE, and "My Cool Page" in all other browsers
+  public function assert_title($expected_title, $ie_hash = '') {
+    if ($this->browser == 'internet explorer') {
+      PHPUnit_Framework_Assert::assertEquals($expected_title . $ie_hash, $this->get_title(), "Failed asserting that title is <$expected_title> with hash <$ie_hash>.");
+    } else {
+      PHPUnit_Framework_Assert::assertEquals($expected_title, $this->get_title(), "Failed asserting that title is <$expected_title>.");
+    }
   }
   
   public function assert_element_present($element_locator) {

@@ -71,7 +71,7 @@ class WebDriver_WebElement {
     $all_element_ids = WebDriver::GetJSONValue($response, "ELEMENT");
     $all_elements = array();
     foreach ($all_element_ids as $element_id) {
-      $all_elements[] = new WebDriver_WebElement($this->driver, $element_id, $locator);
+      $all_elements[] = new WebDriver_WebElement($this->driver, $this->element_id, $locator);
     }
     return $all_elements;
   }
@@ -186,14 +186,14 @@ class WebDriver_WebElement {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/moveto
   public function move_cursor_to_center() {
-    $payload = array("element" => $element_id);
+    $payload = array("element" => $this->element_id);
     $this->driver->execute("POST", "/session/:sessionId/moveto", $payload);
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/moveto
   public function move_cursor_relative($right, $down) {
     $payload = array(
-      "element" => $element_id,
+      "element" => $this->element_id,
       "xoffset" => $right,
       "yoffset" => $down,
     );

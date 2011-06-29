@@ -125,6 +125,19 @@ class WebDriver_WebElement {
     }
   }
   
+  // 0-based index
+  public function get_option_index($index) {
+    return $this->get_next_element("//option[$index]");
+  }
+  
+  public function get_option_value($value) {
+    return $this->get_next_element("//option[@value='$value']");
+  }
+  
+  public function get_option_label($label) {
+    return $this->get_next_element("//option[text()='$label']");
+  }
+  
   public function get_options() {
     return $this->get_all_next_elements("tag name=option");
   }
@@ -261,5 +274,29 @@ class WebDriver_WebElement {
   public function assert_value($expected_value) {
     $actual_value = $this->get_value();
     PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s value is <$expected_value>.");
+  }
+  
+  /********************************************************************
+   * Asserters for <select> elements
+   */
+  
+  public function assert_option_count($expected_count) {
+    $options = $this->get_options();
+    PHPUnit_Framework_Assert::assertEquals($expected_count, count($options), "Failed asserting that <{$this->locator}> contains $expected_count options.");
+  }
+  
+  public function assert_contains_label($expected_label) {
+    $contains_label = false;
+    $options = $this->get_options();
+    $labels = array();
+    foreach ($options as $option) {
+      $actual_label = $option->get_text();
+      if ($actual_label == $expected_label) {
+        $contains_label = true;
+        break;
+      }
+      $labels[] = $actual_label;
+    }
+    PHPUnit_Framework_Assert::assertTrue($contains_label, "Failed asserting that <{$this->locator}> contains label <$expected_label>.\n" . print_r($labels, true));
   }
 }

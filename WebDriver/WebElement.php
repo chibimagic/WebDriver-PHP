@@ -245,6 +245,14 @@ class WebDriver_WebElement {
     PHPUnit_Framework_Assert::assertFalse($this->is_enabled(), "Failed asserting that <{$this->locator}> is disabled.");
   }
   
+  public function assert_selected() {
+    PHPUnit_Framework_Assert::assertTrue($this->is_selected(), "Failed asserting that <{$this->locator}> is selected.");
+  }
+  
+  public function assert_not_selected() {
+    PHPUnit_Framework_Assert::assertFalse($this->is_selected(), "Failed asserting that <{$this->locator}> is not selected.");
+  }
+  
   public function assert_text($expected_text) {
     $actual_text = $this->get_text();
     PHPUnit_Framework_Assert::assertEquals($expected_text, $actual_text, "Failed asserting that <{$this->locator}>'s text is <$expected_text>.");

@@ -9,6 +9,7 @@ class WebDriver {
     if (($http_type === "POST" || $http_type === "PUT") && $payload !== null) {
       curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
     }
+    WebDriver::LogDebug("=====");
     WebDriver::LogDebug($http_type, $full_url, $payload);
     $full_response = curl_exec($curl);
     WebDriver::LogDebug($full_response);

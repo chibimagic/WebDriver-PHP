@@ -6,12 +6,17 @@ class WebDriver {
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_type);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($curl, CURLOPT_HEADER, TRUE);
+    curl_setopt($curl, CURLOPT_TIMEOUT, 120); // No single operation should take longer than 2 minutes
     if (($http_type === "POST" || $http_type === "PUT") && $payload !== null) {
       curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
     }
     WebDriver::LogDebug("=====");
     WebDriver::LogDebug($http_type, $full_url, $payload);
     $full_response = curl_exec($curl);
+    $error = curl_error($curl);
+    if($error) {
+      throw new Exception("Curl error: $error\n$http_type\n$full_url\n" . print_r($payload, true));
+    }
     WebDriver::LogDebug($full_response);
     curl_close($curl);
     $response_parts = explode("\r\n\r\n", $full_response, 2);

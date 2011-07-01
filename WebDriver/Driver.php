@@ -201,6 +201,17 @@ class WebDriver_Driver {
     return new WebDriver_WebElement($this, $element_id, $locator);
   }
   
+  // WebDriver can do implicit waits for AJAX elements, but sometimes you need explicit reloads
+  // Note: is_element_present() will use the wait time, if any, that you've set with set_implicit_wait()
+  public function get_element_reload($locator, $max_wait_minutes = 2) {
+    $start_time = time();
+    $end_time = $start_time + $max_wait_minutes * 60;
+    while (time() < $end_time && $this->is_element_present($locator) == false) {
+      $this->reload();
+    }
+    return $this->get_element($locator);
+  }
+  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/elements
   public function get_all_elements($locator) {
     $payload = WebDriver::ParseLocator($locator);

@@ -321,7 +321,7 @@ class WebDriver_Driver {
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/refresh
-  public function refresh() {
+  public function reload() {
     $this->execute("POST", "/session/:sessionId/refresh");
   }
   

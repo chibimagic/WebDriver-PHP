@@ -125,7 +125,7 @@ class WebDriver_WebElement {
     }
   }
   
-  // 0-based index
+  // 1-based index
   public function get_option_index($index) {
     return $this->get_next_element("//option[$index]");
   }
@@ -227,6 +227,7 @@ class WebDriver_WebElement {
     $option_element->select();
   }
   
+  // 1-based index
   public function select_index($index) {
     $option_element = $this->get_next_element("xpath=//option[" . $index . "]");
     $option_element->select();

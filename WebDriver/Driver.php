@@ -46,23 +46,23 @@ class WebDriver_Driver {
     }
   }
   
-  public static function InitAtSauce($sauce_username, $sauce_key, $os, $browser, $version = false) {
-    $capabilities = array(
+  public static function InitAtSauce($sauce_username, $sauce_key, $os, $browser, $version = false, $additional_options = array()) {
+    $capabilities = array_merge(array(
       'javascriptEnabled' => true,
       'platform' => strtoupper($os),
       'browserName' => $browser,
-    );
+    ), $additional_options);
     if ($version) {
       $capabilities["version"] = $version;
     }
     return new WebDriver_Driver("http://" . $sauce_username . ":" . $sauce_key . "@ondemand.saucelabs.com:80/wd/hub", $capabilities);
   }
   
-  public static function InitAtLocal($port, $browser) {
-    $capabilities = array(
+  public static function InitAtLocal($port, $browser, $additional_options = array()) {
+    $capabilities = array_merge(array(
       'javascriptEnabled' => true,
       'browserName' => $browser,
-    );
+    ), $additional_options);
     if (strcasecmp($browser, "iphone") == 0 || strcasecmp($browser, "android") == 0) {
       return new WebDriver_Driver("http://localhost:$port/hub", $capabilities);
     } else {

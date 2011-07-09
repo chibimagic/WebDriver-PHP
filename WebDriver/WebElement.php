@@ -131,11 +131,11 @@ class WebDriver_WebElement {
   }
   
   public function get_option_value($value) {
-    return $this->get_next_element("//option[@value='$value']");
+    return $this->get_next_element("//option[@value=" . WebDriver::QuoteXPath($value) . "]");
   }
   
   public function get_option_label($label) {
-    return $this->get_next_element("//option[text()='$label']");
+    return $this->get_next_element("//option[text()=" . WebDriver::QuoteXPath($label) . "]");
   }
   
   public function get_options() {
@@ -218,19 +218,16 @@ class WebDriver_WebElement {
    */
 
   public function select_label($label) {
-    $option_element = $this->get_next_element("xpath=//option[text()='" . $label . "']");
-    $option_element->select();
+    $this->get_next_element("//option[text()=" . WebDriver::QuoteXPath($label) . "]")->select();
   }
   
   public function select_value($value) {
-    $option_element = $this->get_next_element("xpath=//option[@value='" . $value . "']");
-    $option_element->select();
+    $this->get_next_element("//option[@value=" . WebDriver::QuoteXPath($value) . "]")->select();
   }
   
   // 1-based index
   public function select_index($index) {
-    $option_element = $this->get_next_element("xpath=//option[" . $index . "]");
-    $option_element->select();
+    $this->get_next_element("//option[" . $index . "]")->select();
   }
   
   public function select_random() {

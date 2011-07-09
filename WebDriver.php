@@ -66,6 +66,19 @@ class WebDriver {
     }
     return array("using" => $strategy, "value" => $value);
   }
+  
+  public static function QuoteXPath($value) {
+    $contains_single_quote = strpos($value, "'") !== false;
+    $contains_double_quote = strpos($value, '"') !== false;
+    if (!$contains_single_quote) {
+      return "'" . $value . "'";
+    } else if (!$contains_double_quote) {
+      return '"' . $value . '"';
+    } else {
+      $parts = split("'", $value);
+      return "concat('" . implode("', \"'\", '", $parts) . "')";
+    }
+  }
 
   public static function GetJSONValue($curl_response, $attribute = null) {
     if (!isset($curl_response['body'])) {

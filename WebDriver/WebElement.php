@@ -169,7 +169,7 @@ class WebDriver_WebElement {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/selected
   public function select() {
-    $this->execute("POST", "/selected");
+    $this->click(); // POST /session/:sessionId/element/:id/selected is deprecated as of Selenium 2.0.0
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/toggle

@@ -4,6 +4,7 @@ class WebDriver_Driver {
   protected $session_id;
   protected $server_url;
   protected $browser;
+  protected $implicit_wait_ms;
   private static $status_codes = array(
     0 => array("Success", " The command executed successfully."),
     7 => array("NoSuchElement", " An element could not be located on the page using the given search parameters."),
@@ -25,6 +26,7 @@ class WebDriver_Driver {
   protected function __construct($server_url, $capabilities) {
     $this->server_url = $server_url;
     $this->browser = $capabilities['browserName'];
+    $this->implicit_wait_ms = 0;
     
     $payload = array("desiredCapabilities" => $capabilities);
     $response = $this->execute("POST", "/session", $payload);
@@ -300,6 +302,7 @@ class WebDriver_Driver {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/timeouts/implicit_wait
   public function set_implicit_wait($milliseconds) {
+    $this->implicit_wait_ms = $milliseconds;
     $payload = array("ms" => $milliseconds);
     $this->execute("POST", "/session/:sessionId/timeouts/implicit_wait", $payload);
   }
@@ -505,12 +508,15 @@ class WebDriver_Driver {
   
   // IE appends the anchor tag to the window title, but only when it's done loading
   // Example: $driver->assert_title("My Cool Page", "#chapter7") asserts that the page title is "My Cool Page#chapter7" in IE, and "My Cool Page" in all other browsers
+  // WebDriver does not wait for the page to finish loading before returning the title, so we check repeatedly
   public function assert_title($expected_title, $ie_hash = '') {
-    if ($this->browser == 'internet explorer') {
-      PHPUnit_Framework_Assert::assertEquals($expected_title . $ie_hash, $this->get_title(), "Failed asserting that title is <$expected_title> with hash <$ie_hash>.");
-    } else {
-      PHPUnit_Framework_Assert::assertEquals($expected_title, $this->get_title(), "Failed asserting that title is <$expected_title>.");
+    $start_time = time();
+    $end_time = $start_time + $this->implicit_wait_ms/1000;
+    $title_matched = false;
+    while (time() < $end_time && !$title_matched) {
+      $title_matched = ($this->browser == 'internet explorer' && $this->get_title() == $expected_title . $ie_hash) || ($this->get_title() == $expected_title);
     }
+    PHPUnit_Framework_Assert::assertTrue($title_matched, "Failed asserting that title is <$expected_title> with optional hash <$ie_hash>.");
   }
   
   public function assert_element_present($element_locator) {

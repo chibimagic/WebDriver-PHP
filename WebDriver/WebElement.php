@@ -14,8 +14,7 @@ class WebDriver_WebElement {
   private function execute($http_type, $relative_url, $payload = null) {
     return $this->driver->execute($http_type, "/session/:sessionId/element/" . $this->element_id . $relative_url, $payload);
   }
-
-
+  
   /********************************************************************
    * Getters
    */
@@ -265,9 +264,12 @@ class WebDriver_WebElement {
   }
   
   public function assert_text($expected_text) {
-    $actual_text = $this->get_text();
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
+    while (time() < $end_time && $actual_text != $expected_text) {
+      $actual_text = $this->get_text();
+    }
     PHPUnit_Framework_Assert::assertEquals($expected_text, $actual_text, "Failed asserting that <{$this->locator}>'s text is <$expected_text>.");
-  } 
+  }
 
   public function assert_value($expected_value) {
     $actual_value = $this->get_value();

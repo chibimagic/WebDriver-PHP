@@ -1,6 +1,8 @@
 <?php
 
 class WebDriver {
+  public static $ImplicitWaitMS = 0;
+  
   public static function Curl($http_type, $full_url, $payload = null) {
     $curl = curl_init($full_url);
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_type);

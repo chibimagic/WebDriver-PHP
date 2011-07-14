@@ -4,7 +4,6 @@ class WebDriver_Driver {
   protected $session_id;
   protected $server_url;
   protected $browser;
-  protected $implicit_wait_ms;
   private static $status_codes = array(
     0 => array("Success", " The command executed successfully."),
     7 => array("NoSuchElement", " An element could not be located on the page using the given search parameters."),
@@ -26,7 +25,6 @@ class WebDriver_Driver {
   protected function __construct($server_url, $capabilities) {
     $this->server_url = $server_url;
     $this->browser = $capabilities['browserName'];
-    $this->implicit_wait_ms = 0;
     
     $payload = array("desiredCapabilities" => $capabilities);
     $response = $this->execute("POST", "/session", $payload);
@@ -302,7 +300,7 @@ class WebDriver_Driver {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/timeouts/implicit_wait
   public function set_implicit_wait($milliseconds) {
-    $this->implicit_wait_ms = $milliseconds;
+    WebDriver::$ImplicitWaitMS = $milliseconds;
     $payload = array("ms" => $milliseconds);
     $this->execute("POST", "/session/:sessionId/timeouts/implicit_wait", $payload);
   }
@@ -511,7 +509,7 @@ class WebDriver_Driver {
   // WebDriver does not wait for the page to finish loading before returning the title, so we check repeatedly
   public function assert_title($expected_title, $ie_hash = '') {
     $start_time = time();
-    $end_time = $start_time + $this->implicit_wait_ms/1000;
+    $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
     $title_matched = false;
     while (time() < $end_time && !$title_matched) {
       $title_matched = ($this->browser == 'internet explorer' && $this->get_title() == $expected_title . $ie_hash) || ($this->get_title() == $expected_title);

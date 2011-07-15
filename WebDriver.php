@@ -3,14 +3,14 @@
 class WebDriver {
   public static $ImplicitWaitMS = 0;
   
-  public static function Curl($http_type, $full_url, $payload = null) {
+  public static function Curl($http_type, $full_url, $payload = null, $escape_payload = true) {
     $curl = curl_init($full_url);
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_type);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($curl, CURLOPT_HEADER, TRUE);
     curl_setopt($curl, CURLOPT_TIMEOUT, 120); // No single operation should take longer than 2 minutes
     if (($http_type === "POST" || $http_type === "PUT") && $payload !== null) {
-      if (is_array($payload) || is_object($payload)) {
+      if ($escape_payload && (is_array($payload) || is_object($payload))) {
         $payload = http_build_query($payload);
       }
       curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);

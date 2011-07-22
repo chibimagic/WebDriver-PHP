@@ -70,7 +70,7 @@ class WebDriver_WebElement {
     $all_element_ids = WebDriver::GetJSONValue($response, "ELEMENT");
     $all_elements = array();
     foreach ($all_element_ids as $element_id) {
-      $all_elements[] = new WebDriver_WebElement($this->driver, $this->element_id, $locator);
+      $all_elements[] = new WebDriver_WebElement($this->driver, $element_id, $locator);
     }
     return $all_elements;
   }

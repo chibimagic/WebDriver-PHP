@@ -116,7 +116,6 @@ class WebDriver_WebElement {
    */
   
   public function get_selected() {
-    // See http://code.google.com/p/selenium/issues/detail?id=1518
     foreach ($this->get_options() as $option) {
       if ($option->is_selected()) {
         return $option;

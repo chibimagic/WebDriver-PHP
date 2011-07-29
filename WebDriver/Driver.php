@@ -4,6 +4,8 @@ class WebDriver_Driver {
   protected $session_id;
   protected $server_url;
   protected $browser;
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
   private static $status_codes = array(
     0 => array("Success", " The command executed successfully."),
     7 => array("NoSuchElement", " An element could not be located on the page using the given search parameters."),

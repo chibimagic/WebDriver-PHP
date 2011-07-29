@@ -49,10 +49,10 @@ class WebDriver {
     );
     
     $locator_parts = explode("=", $locator, 2);
-    if (array_key_exists($locator_parts[0], $se1_to_se2) && $locator_parts[1]) { // Explicit Se1 selector
+    if (array_key_exists($locator_parts[0], $se1_to_se2) && isset($locator_parts[1]) && strlen($locator_parts[1]) > 0) { // Explicit Se1 selector
       $strategy = $se1_to_se2[$locator_parts[0]];
       $value = $locator_parts[1];
-    } else if (in_array($locator_parts[0], $se1_to_se2) && $locator_parts[1]) { // Explicit Se2 selector
+    } else if (in_array($locator_parts[0], $se1_to_se2) && isset($locator_parts[1]) && strlen($locator_parts[1]) > 0) { // Explicit Se2 selector
       $strategy = $locator_parts[0];
       $value = $locator_parts[1];
     } else { // Guess the selector based on Se1

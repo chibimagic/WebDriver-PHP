@@ -73,7 +73,7 @@ class WebDriver_Driver {
   }
   
   public static function InitAtLocal($port, $browser, $additional_options = array()) {
-    self::InitAtHost('localhost', $port, $browser, $additional_options);
+    return self::InitAtHost('localhost', $port, $browser, $additional_options);
   }
   
   public function running_at_sauce() {

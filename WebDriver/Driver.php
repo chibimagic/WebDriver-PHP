@@ -516,9 +516,10 @@ class WebDriver_Driver {
     $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
     $title_matched = false;
     while (time() < $end_time && !$title_matched) {
-      $title_matched = ($this->browser == 'internet explorer' && $this->get_title() == $expected_title . $ie_hash) || ($this->get_title() == $expected_title);
+      $actual_title = $this->get_title();
+      $title_matched = ($this->browser == 'internet explorer' && $actual_title == $expected_title . $ie_hash) || ($actual_title == $expected_title);
     }
-    PHPUnit_Framework_Assert::assertTrue($title_matched, "Failed asserting that title is <$expected_title> with optional hash <$ie_hash>.");
+    PHPUnit_Framework_Assert::assertTrue($title_matched, "Failed asserting that <$actual_title> is <$expected_title> with optional hash <$ie_hash>.");
   }
   
   public function assert_element_present($element_locator) {

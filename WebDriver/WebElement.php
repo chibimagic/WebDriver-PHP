@@ -264,9 +264,9 @@ class WebDriver_WebElement {
   
   public function assert_text($expected_text) {
     $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
-    while (time() < $end_time && $actual_text != $expected_text) {
+    do {
       $actual_text = $this->get_text();
-    }
+    } while (time() < $end_time && $actual_text != $expected_text);
     PHPUnit_Framework_Assert::assertEquals($expected_text, $actual_text, "Failed asserting that <{$this->locator}>'s text is <$expected_text>.");
   }
   

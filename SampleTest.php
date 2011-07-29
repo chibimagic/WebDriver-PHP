@@ -36,7 +36,7 @@ class SampleTest extends PHPUnit_Framework_TestCase {
 
   public function test() {
     $this->load("http://seleniumhq.org/");
-    $this->assert_title("Selenium web application testing system");
+    $this->assert_title("Selenium - Web Browser Automation");
     $this->get_element("css=h2")->assert_text("Get started with Selenium!");
     
     $this->get_element("id=q")->send_keys("webdriver");

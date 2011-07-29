@@ -4,6 +4,7 @@ require_once 'WebDriver.php';
 require_once 'WebDriver/Driver.php';
 require_once 'WebDriver/MockDriver.php';
 require_once 'WebDriver/WebElement.php';
+require_once 'WebDriver/MockElement.php';
 
 class SampleTest extends PHPUnit_Framework_TestCase {
   protected $driver;
@@ -18,6 +19,7 @@ class SampleTest extends PHPUnit_Framework_TestCase {
     
     // For a mock driver (for debugging)
 //     $this->driver = new WebDriver_MockDriver();
+//     define('kFestDebug', true);
 
     // For a local driver
     $this->driver = WebDriver_Driver::InitAtLocal("4444", "firefox");
@@ -27,6 +29,8 @@ class SampleTest extends PHPUnit_Framework_TestCase {
   public function __call($name, $arguments) {
     if (method_exists($this->driver, $name)) {
       return call_user_func_array(array($this->driver, $name), $arguments);
+    } else {
+      throw new Exception("Tried to call nonexistent method $name with arguments:\n" . print_r($arguments, true));
     }
   }
 

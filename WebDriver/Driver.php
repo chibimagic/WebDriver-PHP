@@ -58,16 +58,20 @@ class WebDriver_Driver {
     return new WebDriver_Driver("http://" . $sauce_username . ":" . $sauce_key . "@ondemand.saucelabs.com:80/wd/hub", $capabilities);
   }
   
-  public static function InitAtLocal($port, $browser, $additional_options = array()) {
+  public static function InitAtHost($host, $port, $browser, $additional_options = array()) {
     $capabilities = array_merge(array(
       'javascriptEnabled' => true,
       'browserName' => $browser,
     ), $additional_options);
     if (strcasecmp($browser, "iphone") == 0 || strcasecmp($browser, "android") == 0) {
-      return new WebDriver_Driver("http://localhost:$port/hub", $capabilities);
+      return new WebDriver_Driver("http://$host:$port/hub", $capabilities);
     } else {
-      return new WebDriver_Driver("http://localhost:$port/wd/hub", $capabilities);
+      return new WebDriver_Driver("http://$host:$port/wd/hub", $capabilities);
     }
+  }
+  
+  public static function InitAtLocal($port, $browser, $additional_options = array()) {
+    self::InitAtHost('localhost', $port, $browser, $additional_options);
   }
   
   public function running_at_sauce() {

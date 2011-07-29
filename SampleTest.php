@@ -35,6 +35,7 @@ class SampleTest extends PHPUnit_Framework_TestCase {
   }
 
   public function test() {
+    $this->set_implicit_wait(5000);
     $this->load("http://seleniumhq.org/");
     $this->assert_title("Selenium - Web Browser Automation");
     $this->get_element("css=h2")->assert_text("Get started with Selenium!");

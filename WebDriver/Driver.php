@@ -373,7 +373,7 @@ class WebDriver_Driver {
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/frame
-  public function select_frame($identifier) {
+  public function select_frame($identifier = null) {
     $payload = array("id" => $identifier);
     $this->execute("POST", "/session/:sessionId/frame", $payload);
   }

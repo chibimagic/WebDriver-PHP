@@ -84,14 +84,14 @@ class WebDriver {
       }
       curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
     }
-    WebDriver::LogDebug("=====");
     WebDriver::LogDebug($http_type, $full_url, $payload);
     $full_response = curl_exec($curl);
+    WebDriver::LogDebug($full_response);
+    WebDriver::LogDebug("=====");
     $error = curl_error($curl);
     if($error) {
       throw new Exception("Curl error: $error\n$http_type\n$full_url\n" . print_r($payload, true));
     }
-    WebDriver::LogDebug($full_response);
     curl_close($curl);
     $response_parts = explode("\r\n\r\n", $full_response, 2);
     $response['header'] = $response_parts[0];

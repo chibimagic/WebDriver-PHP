@@ -293,6 +293,12 @@ class WebDriver_Driver {
   }
   public function is_landscape()  { return $this->get_orientation() == "LANDSCAPE"; }
   public function is_portrait()   { return $this->get_orientation() == "PORTRAIT"; }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/alert_text
+  public function get_alert_text() {
+    $response = $this->execute("GET", "/session/:sessionId/alert_text");
+    return WebDriver::GetJSONValue($response);
+  }
 
   /********************************************************************
    * Setters
@@ -491,6 +497,22 @@ class WebDriver_Driver {
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/doubleclick
   public function double_click() {
     $this->execute("POST", "/session/:sessionId/doubleclick");
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/alert_text
+  public function type_alert($text) {
+    $payload = array("keysToSend" => $text);
+    $this->execute("POST", "/session/:sessionId/alert_text", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/accept_alert
+  public function accept_alert() {
+    $this->execute("POST", "/session/:sessionId/accept_alert");
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/dismiss_alert
+  public function dismiss_alert() {
+    $this->execute("POST", "/session/:sessionId/dismiss_alert");
   }
   
   // See https://saucelabs.com/docs/sauce-ondemand#alternative-annotation-methods

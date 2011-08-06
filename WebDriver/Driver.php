@@ -563,4 +563,9 @@ class WebDriver_Driver {
     $page_text = $this->get_text();
     PHPUnit_Framework_Assert::assertNotContains($expected_missing_string, $page_text, "Failed asserting that page text does not contain <$expected_missing_string>.\n$page_text");
   }
+  
+  public function assert_alert_text($expected_text) {
+    $actual_text = $this->get_alert_text();
+    PHPUnit_Framework_Assert::assertEquals($expected_text, $actual_text, "Failed asserting that alert text is <$expected_text>.");
+  }
 }

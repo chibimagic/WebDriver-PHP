@@ -40,19 +40,15 @@ class WebDriver_Driver {
     
     // Parse out session id
     preg_match("/\nLocation:.*\/(.*)\n/", $response['header'], $matches);
-    if (count($matches) > 0) {
-      $this->session_id = trim($matches[1]);
+    if (!empty($response['body'])) {
+      $additional_info = $response['body'];
+    } else if (!empty($response['header'])) {
+      $additional_info = $response['header'];
     } else {
-      $message = "Did not get a session id from $server_url\n";
-      if (!empty($response['body'])) {
-        $message .= $response['body'];
-      } else if (!empty($response['header'])) {
-        $message .= $response['header'];
-      } else {
-        $message .= "No response from server.";
-      }
-      throw new Exception($message);
+      $additional_info = "No response from server.";
     }
+    PHPUnit_Framework_Assert::assertEquals(2, count($matches), "Did not get a session id from $server_url\n$additional_info");
+    $this->session_id = trim($matches[1]);
   }
   
   public static function InitAtSauce($sauce_username, $sauce_key, $os, $browser, $version = false, $additional_options = array()) {
@@ -113,19 +109,10 @@ class WebDriver_Driver {
     $array = json_decode(trim($body), true);
     if (!is_null($array)) {
       $response_status_code = $array["status"];
-      if (!self::$status_codes[$response_status_code]) {
-        throw new Exception("Unknown status code $response_status_code returned from server.\n$body");
-      }
-      if ($response_status_code != 0) {
-        $message = $response_status_code . " - " . self::$status_codes[$response_status_code][0] . " - " . self::$status_codes[$response_status_code][1] . "\n";
-        $message .= "Command: $command_info\n";
-        if (isset($array['value']['message'])) {
-          $message .= "Message: " . $array['value']['message'];
-        } else {
-          $message .= "Response: " . $body;
-        }
-        throw new Exception($message);
-      }
+      PHPUnit_Framework_Assert::assertArrayHasKey($response_status_code, self::$status_codes, "Unknown status code $response_status_code returned from server.\n$body");
+      $response_info = $response_status_code . " - " . self::$status_codes[$response_status_code][0] . " - " . self::$status_codes[$response_status_code][1];
+      $additional_info = isset($array['value']['message']) ? "Message: " . $array['value']['message'] : "Response: " . $body;
+      PHPUnit_Framework_Assert::assertEquals(0, $response_status_code, "Unsuccessful WebDriver command: $response_info\nCommand: $command_info\n$additional_info");
     }
   }
   
@@ -163,19 +150,7 @@ class WebDriver_Driver {
   }
   
   public function get_text() {
-    $tries = $this->running_at_sauce() ? 3 : 1; // Sauce Labs has trouble with this tag sometimes, so we give it a couple tries
-    for ($i = 1; $i <= $tries; $i++) {
-      try {
-        $result = $this->get_element("tag name=body")->get_text();
-        break;
-      } catch (Exception $e) {
-        // try again
-      }
-    }
-    if (!isset($result)) {
-      throw new Exception("Could not get body text after $tries tries");
-    }
-    return $result;
+    return $this->get_element("tag name=body")->get_text();
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/screenshot
@@ -363,9 +338,7 @@ class WebDriver_Driver {
         break;
       }
     }
-    if (!$found_window) {
-      throw new Exception("Could not find window with title <$window_title> and optional hash <$ie_hash>. Found " . count($all_titles) . " windows: " . implode("; ", $all_titles));
-    }
+    PHPUnit_Framework_Assert::assertTrue($found_window, "Could not find window with title <$window_title> and optional hash <$ie_hash>. Found " . count($all_titles) . " windows: " . implode("; ", $all_titles));
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/window

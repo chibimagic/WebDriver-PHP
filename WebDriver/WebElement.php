@@ -1,6 +1,9 @@
 <?php
 
 class WebDriver_WebElement {
+  /**
+   * @var WebDriver_Driver
+   */
   private $driver;
   private $element_id;
   private $locator;
@@ -183,7 +186,7 @@ class WebDriver_WebElement {
   }
 
   public function type_random() {
-    $this->send_keys(Fest::RandomString());
+    $this->send_keys(base_convert(mt_rand(0x41C21CB8E0FFFFFF,0x1D39D3E06400000), 10, 36));
   }
 
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/drag

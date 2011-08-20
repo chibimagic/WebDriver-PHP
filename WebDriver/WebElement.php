@@ -4,57 +4,57 @@ class WebDriver_WebElement {
   private $driver;
   private $element_id;
   private $locator;
-  
+
   public function __construct($driver, $element_id, $locator) {
     $this->driver = $driver;
     $this->element_id = $element_id;
     $this->locator = $locator;
   }
-  
+
   private function execute($http_type, $relative_url, $payload = null) {
     return $this->driver->execute($http_type, "/session/:sessionId/element/" . $this->element_id . $relative_url, $payload);
   }
-  
+
   /********************************************************************
    * Getters
    */
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id
   public function describe() {
     $response = $this->execute("GET", "");
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/text
   public function get_text() {
     $response = $this->execute("GET", "/text");
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/value
   public function get_value() {
     $response = $this->execute("GET", "/value");
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/displayed
   public function is_visible() {
     $response = $this->execute("GET", "/displayed");
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/enabled
   public function is_enabled() {
     $response = $this->execute("GET", "/enabled");
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/selected
   public function is_selected() {
     $response = $this->execute("GET", "/selected");
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/element
   public function get_next_element($locator) {
     $payload = WebDriver::ParseLocator($locator);
@@ -62,7 +62,7 @@ class WebDriver_WebElement {
     $next_element_id = WebDriver::GetJSONValue($response, "ELEMENT");
     return new WebDriver_WebElement($this->driver, $next_element_id, $locator);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/elements
   public function get_all_next_elements($locator) {
     $payload = WebDriver::ParseLocator($locator);
@@ -74,37 +74,37 @@ class WebDriver_WebElement {
     }
     return $all_elements;
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/name
   public function get_tag_name() {
-    $this->execute("GET", "/name");
+    $response = $this->execute("GET", "/name");
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/attribute/:name
   public function get_attribute_value($attribute_name) {
     $response = $this->execute("GET", "/attribute/" . $attribute_name);
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/equals/:other
   public function is_same_element_as($other_element_id) {
     $response = $this->execute("GET", "/equals/" . $other_element_id);
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/location
   public function get_location() {
     $response = $this->execute("GET", "/location");
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/size
   public function get_size() {
     $response = $this->execute("GET", "/size");
     return WebDriver::GetJSONValue($response);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/css/:propertyName
   public function get_css_value($property_name) {
     $response = $this->execute("GET", "/css/" . $property_name);
@@ -114,7 +114,7 @@ class WebDriver_WebElement {
   /********************************************************************
    * Getters for <select> elements
    */
-  
+
   public function get_selected() {
     foreach ($this->get_options() as $option) {
       if ($option->is_selected()) {
@@ -122,54 +122,54 @@ class WebDriver_WebElement {
       }
     }
   }
-  
+
   // 1-based index
   public function get_option_index($index) {
     return $this->get_next_element("//option[$index]");
   }
-  
+
   public function get_option_value($value) {
     return $this->get_next_element("//option[@value=" . WebDriver::QuoteXPath($value) . "]");
   }
-  
+
   public function get_option_label($label) {
     return $this->get_next_element("//option[text()=" . WebDriver::QuoteXPath($label) . "]");
   }
-  
+
   public function get_options() {
     return $this->get_all_next_elements("tag name=option");
   }
-  
+
   /********************************************************************
    * Setters
    */
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/click
   public function click() {
     $this->execute("POST", "/click");
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/submit
   public function submit() {
     $this->execute("POST", "/submit");
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/clear
   public function clear() {
     $this->execute("POST", "/clear");
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/hover
   public function hover() {
     // $this->execute("POST", "/hover"); // Not supported as of Selenium 2.0rc3
     $this->move_cursor_to_center(); // Workaround until /hover is implemented
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/selected
   public function select() {
     $this->click(); // POST /session/:sessionId/element/:id/selected is deprecated as of Selenium 2.0.0
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/toggle
   public function toggle() {
     $response = $this->execute("POST", "/toggle");
@@ -181,11 +181,11 @@ class WebDriver_WebElement {
     $payload = array("value" => preg_split('//u', $keys, -1, PREG_SPLIT_NO_EMPTY));
     $this->execute("POST", "/value", $payload);
   }
-  
+
   public function type_random() {
     $this->send_keys(Fest::RandomString());
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/drag
   public function drag_and_drop($pixels_right, $pixels_down) {
     $payload = array(
@@ -194,13 +194,13 @@ class WebDriver_WebElement {
     );
     $this->execute("POST", "/drag", $payload);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/moveto
   public function move_cursor_to_center() {
     $payload = array("element" => $this->element_id);
     $this->driver->execute("POST", "/session/:sessionId/moveto", $payload);
   }
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/moveto
   public function move_cursor_relative($right, $down) {
     $payload = array(
@@ -210,7 +210,7 @@ class WebDriver_WebElement {
     );
     $this->driver->execute("POST", "/session/:sessionId/moveto", $payload);
   }
-  
+
   /********************************************************************
    * Setters for <select> elements
    */
@@ -218,22 +218,22 @@ class WebDriver_WebElement {
   public function select_label($label) {
     $this->get_next_element("//option[text()=" . WebDriver::QuoteXPath($label) . "]")->select();
   }
-  
+
   public function select_value($value) {
     $this->get_next_element("//option[@value=" . WebDriver::QuoteXPath($value) . "]")->select();
   }
-  
+
   // 1-based index
   public function select_index($index) {
     $this->get_next_element("//option[" . $index . "]")->select();
   }
-  
+
   public function select_random() {
     $all_elements = $this->get_options();
     $new_index = rand(1, count($all_elements));
     $this->select_index($new_index);
   }
-  
+
   /********************************************************************
    * Asserters
    */
@@ -241,7 +241,7 @@ class WebDriver_WebElement {
   public function assert_visible() {
     PHPUnit_Framework_Assert::assertTrue($this->is_visible(), "Failed asserting that <{$this->locator}> is visible.");
   }
-  
+
   public function assert_hidden() {
     PHPUnit_Framework_Assert::assertFalse($this->is_visible(), "Failed asserting that <{$this->locator}> is hidden.");
   }
@@ -249,19 +249,19 @@ class WebDriver_WebElement {
   public function assert_enabled() {
     PHPUnit_Framework_Assert::assertTrue($this->is_enabled(), "Failed asserting that <{$this->locator}> is enabled.");
   }
-  
+
   public function assert_disabled() {
     PHPUnit_Framework_Assert::assertFalse($this->is_enabled(), "Failed asserting that <{$this->locator}> is disabled.");
   }
-  
+
   public function assert_selected() {
     PHPUnit_Framework_Assert::assertTrue($this->is_selected(), "Failed asserting that <{$this->locator}> is selected.");
   }
-  
+
   public function assert_not_selected() {
     PHPUnit_Framework_Assert::assertFalse($this->is_selected(), "Failed asserting that <{$this->locator}> is not selected.");
   }
-  
+
   public function assert_text($expected_text) {
     $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
     do {
@@ -269,7 +269,7 @@ class WebDriver_WebElement {
     } while (time() < $end_time && $actual_text != $expected_text);
     PHPUnit_Framework_Assert::assertEquals($expected_text, $actual_text, "Failed asserting that <{$this->locator}>'s text is <$expected_text>.");
   }
-  
+
   public function assert_text_contains($expected_needle) {
     $actual_haystack = $this->get_text();
     PHPUnit_Framework_Assert::assertContains($expected_needle, $actual_haystack, "Failed asserting that <{$this->locator}>'s text contains <$expected_needle>.");
@@ -284,16 +284,16 @@ class WebDriver_WebElement {
     $actual_value = $this->get_value();
     PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s value is <$expected_value>.");
   }
-  
+
   /********************************************************************
    * Asserters for <select> elements
    */
-  
+
   public function assert_option_count($expected_count) {
     $options = $this->get_options();
     PHPUnit_Framework_Assert::assertEquals($expected_count, count($options), "Failed asserting that <{$this->locator}> contains $expected_count options.");
   }
-  
+
   public function assert_contains_label($expected_label) {
     $contains_label = false;
     $options = $this->get_options();

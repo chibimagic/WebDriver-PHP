@@ -2,7 +2,7 @@
 
 class WebDriver {
   public static $ImplicitWaitMS = 0;
-  
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/value
   // Example: $my_web_element->send_keys(WebDriver::ReturnKey());
   private static $keys = array(
@@ -63,7 +63,7 @@ class WebDriver {
     'CommandKey' => "\uE03D",
     'MetaKey' => "\uE03D",
   );
-  
+
   public static function __callStatic($name, $arguments) {
     if (isset(self::$keys[$name])) {
       return json_decode('"' . self::$keys[$name] . '"');
@@ -112,9 +112,9 @@ class WebDriver {
         "partial link text",
         "tag name",
         "class",
-        "class name"      
+        "class name"
     );
-    
+
     $locator_parts = explode("=", $locator, 2);
     if (array_key_exists($locator_parts[0], $se1_to_se2) && isset($locator_parts[1]) && strlen($locator_parts[1]) > 0) { // Explicit Se1 selector
       $strategy = $se1_to_se2[$locator_parts[0]];
@@ -135,7 +135,7 @@ class WebDriver {
     }
     return array("using" => $strategy, "value" => $value);
   }
-  
+
   public static function QuoteXPath($value) {
     $contains_single_quote = strpos($value, "'") !== false;
     $contains_double_quote = strpos($value, '"') !== false;
@@ -162,15 +162,15 @@ class WebDriver {
       } else if (is_array($array["value"])) {
         $rv = array();
         foreach ($array["value"] as $a_value) {
-          PHPUnit_Framework_Assert::assertArrayHasKey($attribute, $a_value, "JSON value did not have attribute $attribute\n" . $array["value"]["message"]);
+          PHPUnit_Framework_Assert::assertArrayHasKey($attribute, $a_value, "JSON value did not have attribute $attribute\n" . (isset($array["value"]["message"]) ? $array["value"]["message"]: ''));
           $rv[] = $a_value[$attribute];
         }
       }
-      PHPUnit_Framework_Assert::assertNotNull($rv, "JSON value did not have attribute $attribute\n" . $array["value"]["message"]);
+      PHPUnit_Framework_Assert::assertNotNull($rv, "JSON value did not have attribute $attribute\n" . (isset( $array["value"]["message"]) ? $array["value"]["message"]: ''));
     }
     return $rv;
   }
-  
+
   public static function LogDebug() {
     if (defined('kFestDebug') && kFestDebug) {
       $non_null = array_filter(func_get_args());

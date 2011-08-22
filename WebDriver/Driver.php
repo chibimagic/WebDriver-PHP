@@ -360,6 +360,9 @@ class WebDriver_Driver {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/frame
   public function select_frame($identifier = null) {
+    if ($identifier !== null) {
+      $this->get_element($identifier); // POST /session/:sessionId/frame does not use implicit wait but POST /session/:sessionId/element does
+    }
     $payload = array("id" => $identifier);
     $this->execute("POST", "/session/:sessionId/frame", $payload);
   }

@@ -77,6 +77,7 @@ class WebDriver {
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_type);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($curl, CURLOPT_HEADER, TRUE);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Expect:'));
     curl_setopt($curl, CURLOPT_TIMEOUT, 120); // No single operation should take longer than 2 minutes
     if (($http_type === "POST" || $http_type === "PUT") && $payload !== null) {
       if ($escape_payload && (is_array($payload) || is_object($payload))) {

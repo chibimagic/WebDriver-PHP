@@ -110,6 +110,16 @@ class WebDriver_WebElement {
     $response = $this->execute("GET", "/css/" . $property_name);
     return WebDriver::GetJSONValue($response);
   }
+  
+  public function contains_element($locator) {
+    try {
+      $this->get_next_element($locator);
+      $is_element_present = true;
+    } catch (Exception $e) {
+      $is_element_present = false;
+    }
+    return $is_element_present;
+  }
 
   /********************************************************************
    * Getters for <select> elements
@@ -260,6 +270,10 @@ class WebDriver_WebElement {
   
   public function assert_not_selected() {
     PHPUnit_Framework_Assert::assertFalse($this->is_selected(), "Failed asserting that <{$this->locator}> is not selected.");
+  }
+  
+  public function assert_contains_element($child_locator) {
+    PHPUnit_Framework_Assert::assertTrue($this->contains_element($child_locator), "Failed asserting that <{$this->locator}> contains <$child_locator>.");
   }
   
   public function assert_text($expected_text) {

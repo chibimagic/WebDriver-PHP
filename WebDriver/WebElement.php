@@ -299,6 +299,11 @@ class WebDriver_WebElement {
     PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s value is <$expected_value>.");
   }
   
+  public function assert_css_value($property_name, $expected_value) {
+    $actual_value = $this->get_css_value($property_name);
+    PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s <{$property_name}> is <$expected_value>.");
+  }
+  
   /********************************************************************
    * Asserters for <select> elements
    */

@@ -79,6 +79,9 @@ class WebDriver {
     curl_setopt($curl, CURLOPT_HEADER, TRUE);
     curl_setopt($curl, CURLOPT_HTTPHEADER, array('Expect:'));
     curl_setopt($curl, CURLOPT_TIMEOUT, 120); // No single operation should take longer than 2 minutes
+    if ($payload !== null && json_decode($payload) !== null) {
+      curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    }
     if (($http_type === "POST" || $http_type === "PUT") && $payload !== null) {
       if ($escape_payload && (is_array($payload) || is_object($payload))) {
         $payload = http_build_query($payload);

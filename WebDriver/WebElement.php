@@ -28,7 +28,7 @@ class WebDriver_WebElement {
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/text
   public function get_text() {
     $response = $this->execute("GET", "/text");
-    return WebDriver::GetJSONValue($response);
+    return trim(WebDriver::GetJSONValue($response));
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/value

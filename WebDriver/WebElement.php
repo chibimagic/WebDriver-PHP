@@ -286,7 +286,7 @@ class WebDriver_WebElement {
   
   public function assert_text_contains($expected_needle) {
     $actual_haystack = $this->get_text();
-    PHPUnit_Framework_Assert::assertContains($expected_needle, $actual_haystack, "Failed asserting that <{$this->locator}>'s text contains <$expected_needle>.");
+    PHPUnit_Framework_Assert::assertContains($expected_needle, $actual_haystack, "Failed asserting that <{$this->locator}>'s text contains <$expected_needle>.\n$actual_haystack");
   }
 
   public function assert_text_does_not_contain($expected_missing_needle) {

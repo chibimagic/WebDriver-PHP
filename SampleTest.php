@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL | E_STRICT);
+
 require_once 'WebDriver.php';
 require_once 'WebDriver/Driver.php';
 require_once 'WebDriver/MockDriver.php';

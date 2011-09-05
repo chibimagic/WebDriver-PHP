@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(E_ALL | E_STRICT);
 require_once 'WebDriver.php';
 
 class WebDriverXPathTest extends PHPUnit_Framework_TestCase {

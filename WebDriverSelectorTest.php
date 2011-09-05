@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(E_ALL | E_STRICT);
 require_once 'WebDriver.php';
 
 class WebDriverSelectorTest extends PHPUnit_Framework_TestCase {

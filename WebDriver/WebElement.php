@@ -77,7 +77,7 @@ class WebDriver_WebElement {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/name
   public function get_tag_name() {
-    $this->execute("GET", "/name");
+    $response = $this->execute("GET", "/name");
     return WebDriver::GetJSONValue($response);
   }
   

@@ -161,16 +161,22 @@ class WebDriver {
     if ($attribute === null) {
       $rv = $array["value"];
     } else {
+      $errmsg = "JSON value did not have attribute $attribute";
+      if (isset($array["value"]["message"])) {
+        $errmsg .= "\n" . $array["value"]["message"];
+      }
+      
       if (isset($array["value"][$attribute])) {
         $rv = $array["value"][$attribute];
       } else if (is_array($array["value"])) {
         $rv = array();
         foreach ($array["value"] as $a_value) {
-          PHPUnit_Framework_Assert::assertArrayHasKey($attribute, $a_value, "JSON value did not have attribute $attribute\n" . $array["value"]["message"]);
+          PHPUnit_Framework_Assert::assertArrayHasKey($attribute, $a_value, $errmsg);
           $rv[] = $a_value[$attribute];
         }
       }
-      PHPUnit_Framework_Assert::assertNotNull($rv, "JSON value did not have attribute $attribute\n" . $array["value"]["message"]);
+      
+      PHPUnit_Framework_Assert::assertNotNull($rv, $errmsg);
     }
     return $rv;
   }

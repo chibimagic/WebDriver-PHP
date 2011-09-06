@@ -276,6 +276,10 @@ class WebDriver_WebElement {
     PHPUnit_Framework_Assert::assertTrue($this->contains_element($child_locator), "Failed asserting that <{$this->locator}> contains <$child_locator>.");
   }
   
+  public function assert_does_not_contain_element($child_locator) {
+    PHPUnit_Framework_Assert::assertFalse($this->contains_element($child_locator), "Failed asserting that <{$this->locator}> does not contain <$child_locator>.");
+  }
+  
   public function assert_text($expected_text) {
     $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
     do {

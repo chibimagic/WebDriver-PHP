@@ -346,6 +346,11 @@ class WebDriver_Driver {
     $this->execute("DELETE", "/session/:sessionId/window");
   }
   
+  public function maximize_window() {
+    $this->execute_js_sync("window.moveTo(0,0)");
+    $this->execute_js_sync("window.resizeTo(screen.width,screen.height)");
+  }
+  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/deactivate
   // Not supported as of Selenium 2.0b3
   public function deactivate_ime() {

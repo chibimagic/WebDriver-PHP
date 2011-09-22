@@ -303,9 +303,16 @@ class WebDriver_WebElement {
     PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s value is <$expected_value>.");
   }
   
-  public function assert_css_value($property_name, $expected_value) {
+  // Will pass for "equivalent" CSS colors such as "#FFFFFF" and "white". Pass $canonicalize_colors = false to disable.
+  public function assert_css_value($property_name, $expected_value, $canonicalize_colors = true) {
     $actual_value = $this->get_css_value($property_name);
-    PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s <{$property_name}> is <$expected_value>.");
+    if (strpos($property_name, 'color') !== false && $canonicalize_colors) {
+      $canonical_expected = WebDriver::CanonicalizeCSSColor($expected_value);
+      $canonical_actual = WebDriver::CanonicalizeCSSColor($actual_value);
+      PHPUnit_Framework_Assert::assertEquals($canonical_expected, $canonical_actual, "Failed asserting that <{$this->locator}>'s <{$property_name}> is <$canonical_expected> after canonicalization.\nExpected: $expected_value -> $canonical_expected\nActual: $actual_value -> $canonical_actual");
+    } else {
+      PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s <{$property_name}> is <$expected_value>.");
+    }
   }
   
   /********************************************************************

@@ -152,6 +152,47 @@ class WebDriver {
       return "concat('" . implode("', \"'\", '", $parts) . "')";
     }
   }
+  
+  // Converts a CSS color to the form FFFFFF
+  public static function CanonicalizeCSSColor($color) {
+    $color = strtolower(trim($color));
+    $rgb = array();
+    $css_colors = array(
+      'black' => '000000',
+      'silver' => 'C0C0C0',
+      'gray' => '808080',
+      'white' => 'FFFFFF',
+      'maroon' => '800000',
+      'red' => 'FF0000',
+      'purple' => '800080',
+      'fuchsia' => 'FF00FF',
+      'green' => '008000',
+      'lime' => '00FF00',
+      'olive' => '808000',
+      'yellow' => 'FFFF00',
+      'navy' => '000080',
+      'blue' => '0000FF',
+      'teal' => '008080',
+      'aqua' => '00FFFF',
+    );
+    if (preg_match('/^rgb\(([0-9]+),\s*([0-9]+),\s*([0-9]+)\)$/', $color, $rgb)) {
+      // rgb(255, 255, 255) -> ffffff
+      if (0 <= $rgb[1] && $rgb[1] <= 255 && 0 <= $rgb[2] && $rgb[2] <= 255 && 0 <= $rgb[3] && $rgb[3] <= 255) {
+        $six_hex = sprintf('%02X%02X%02X', $rgb[1], $rgb[2], $rgb[3]);
+      }
+    } else if (preg_match('/^#?([0-9a-f])([0-9a-f])([0-9a-f])$/', $color, $rgb)) {
+      // #fff -> ffffff
+      $six_hex = $rgb[1] . $rgb[1] . $rgb[2] . $rgb[2] . $rgb[3] . $rgb[3];
+    } else if (preg_match('/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/', $color, $rgb)) {
+      // #ffffff -> ffffff
+      $six_hex = $rgb[1] . $rgb[2] . $rgb[3];
+    } else if (isset($css_colors[$color])) {
+      // white -> FFFFFF
+      $six_hex = $css_colors[$color];
+    }
+    PHPUnit_Framework_Assert::assertNotNull($six_hex, "Cannont canonicalize $color");
+    return strtoupper($six_hex);
+  }
 
   public static function GetJSONValue($curl_response, $attribute = null) {
     PHPUnit_Framework_Assert::assertArrayHasKey('body', $curl_response, "Response had no body\n{$curl_response['header']}");

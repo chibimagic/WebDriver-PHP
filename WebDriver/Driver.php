@@ -349,6 +349,7 @@ class WebDriver_Driver {
   public function maximize_window() {
     $this->execute_js_sync("window.moveTo(0,0)");
     $this->execute_js_sync("window.resizeTo(screen.width,screen.height)");
+    $this->execute_js_sync("window.focus()");
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/deactivate

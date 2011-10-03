@@ -255,7 +255,7 @@ class WebDriver_Driver {
   }
   
   public function get_cookie($name, $property = null) {
-    $all_cookies = $this->get_cookies();
+    $all_cookies = $this->get_all_cookies();
     foreach ($all_cookies as $cookie) {
       if ($cookie['name'] == $name) {
         if (is_null($property)) {

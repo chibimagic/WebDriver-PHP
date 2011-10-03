@@ -77,7 +77,7 @@ class WebDriver_WebElement {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/name
   public function get_tag_name() {
-    $this->execute("GET", "/name");
+    $response = $this->execute("GET", "/name");
     return WebDriver::GetJSONValue($response);
   }
   
@@ -190,10 +190,6 @@ class WebDriver_WebElement {
   public function send_keys($keys) {
     $payload = array("value" => preg_split('//u', $keys, -1, PREG_SPLIT_NO_EMPTY));
     $this->execute("POST", "/value", $payload);
-  }
-  
-  public function type_random() {
-    $this->send_keys(Fest::RandomString());
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/drag

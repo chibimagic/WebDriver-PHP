@@ -116,7 +116,7 @@ class WebDriver {
         "partial link text",
         "tag name",
         "class",
-        "class name"      
+        "class name"
     );
     
     $locator_parts = explode("=", $locator, 2);
@@ -207,15 +207,15 @@ class WebDriver {
       } else if (is_array($array["value"])) {
         $rv = array();
         foreach ($array["value"] as $a_value) {
-          PHPUnit_Framework_Assert::assertArrayHasKey($attribute, $a_value, "JSON value did not have attribute $attribute\n" . $array["value"]["message"]);
+          PHPUnit_Framework_Assert::assertArrayHasKey($attribute, $a_value, "JSON value did not have attribute $attribute\n" . print_r($array, true));
           $rv[] = $a_value[$attribute];
         }
       }
-      PHPUnit_Framework_Assert::assertNotNull($rv, "JSON value did not have attribute $attribute\n" . $array["value"]["message"]);
+      PHPUnit_Framework_Assert::assertNotNull($rv, "JSON value did not have attribute $attribute\n" . print_r($array["value"], true));
     }
     return $rv;
   }
-  
+
   public static function LogDebug() {
     if (defined('kFestDebug') && kFestDebug) {
       $non_null = array_filter(func_get_args());

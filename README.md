@@ -22,3 +22,4 @@ What's code without tests? Run the tests with:
 
     phpunit WebDriverSelectorTest.php
     phpunit WebDriverXPathTest.php
+    phpunit WebDriverColorTest.php

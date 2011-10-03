@@ -550,7 +550,7 @@ class WebDriver_Driver {
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/scroll
-  public function touch_scroll($start_element_id, $pixels_offset_x, $pixels_offset_y) {
+  public function touch_scroll_at($start_element_id, $pixels_offset_x, $pixels_offset_y) {
     $payload = array(
       "element" => $start_element_id,
       "xOffset" => $pixels_offset_x,
@@ -569,7 +569,7 @@ class WebDriver_Driver {
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#session/:sessionId/touch/flick
-  public function touch_flick($start_element_id, $pixels_offset_x, $pixels_offset_y, $pixels_per_second) {
+  public function touch_flick_at($start_element_id, $pixels_offset_x, $pixels_offset_y, $pixels_per_second) {
     $payload = array(
       "element" => $start_element_id,
       "xOffset" => $pixels_offset_x,

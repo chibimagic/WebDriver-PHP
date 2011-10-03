@@ -504,6 +504,90 @@ class WebDriver_Driver {
     $this->execute("POST", "/session/:sessionId/dismiss_alert");
   }
   
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/click
+  public function single_tap($element_id) {
+    $payload = array("element" => $element_id);
+    $this->execute("POST", "/session/:sessionId/touch/click", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/doubleclick
+  public function double_tap($element_id) {
+    $payload = array("element" => $element_id);
+    $this->execute("POST", "/session/:sessionId/touch/doubleclick", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/longclick
+  public function long_tap($element_id) {
+    $payload = array("element" => $element_id);
+    $this->execute("POST", "/session/:sessionId/touch/longclick", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/down
+  public function touch_down($x_coordinate, $y_coordinate) {
+    $payload = array(
+      "x" => $x_coordinate,
+      "y" => $y_coordinate,
+    );
+    $this->execute("POST", "/session/:sessionId/touch/down", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/up
+  public function touch_up($x_coordinate, $y_coordinate) {
+    $payload = array(
+      "x" => $x_coordinate,
+      "y" => $y_coordinate,
+    );
+    $this->execute("POST", "/session/:sessionId/touch/up", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/move
+  public function touch_move($x_coordinate, $y_coordinate) {
+    $payload = array(
+      "x" => $x_coordinate,
+      "y" => $y_coordinate,
+    );
+    $this->execute("POST", "/session/:sessionId/touch/move", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/scroll
+  public function touch_scroll($start_element_id, $pixels_offset_x, $pixels_offset_y) {
+    $payload = array(
+      "element" => $start_element_id,
+      "xOffset" => $pixels_offset_x,
+      "yOffset" => $pixels_offset_y,
+    );
+    $this->execute("POST", "/session/:sessionId/touch/scroll", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/scroll
+  public function touch_scroll($pixels_offset_x, $pixels_offset_y) {
+    $payload = array(
+      "xOffset" => $pixels_offset_x,
+      "yOffset" => $pixels_offset_y,
+    );
+    $this->execute("POST", "/session/:sessionId/touch/scroll", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#session/:sessionId/touch/flick
+  public function touch_flick($start_element_id, $pixels_offset_x, $pixels_offset_y, $pixels_per_second) {
+    $payload = array(
+      "element" => $start_element_id,
+      "xOffset" => $pixels_offset_x,
+      "yOffset" => $pixels_offset_y,
+      "speed" => $pixels_per_second,
+    );
+    $this->execute("POST", "/session/:sessionId/touch/flick", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#session/:sessionId/touch/flick
+  public function touch_flick($pixels_per_second_x, $pixels_per_second_y) {
+    $payload = array(
+      "xSpeed" => $pixels_per_second_x,
+      "ySpeed" => $pixels_per_second_y,
+    );
+    $this->execute("POST", "/session/:sessionId/touch/flick", $payload);
+  }
+  
   // See https://saucelabs.com/docs/sauce-ondemand#alternative-annotation-methods
   public function set_sauce_context($field, $value) {
     if ($this->running_at_sauce()) {

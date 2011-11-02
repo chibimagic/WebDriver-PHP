@@ -691,7 +691,7 @@ class WebDriver_Driver {
       $actual_title = $this->get_title();
       $title_matched = ($this->browser == 'internet explorer' && $actual_title == $expected_title . $ie_hash) || ($actual_title == $expected_title);
     } while (time() < $end_time && !$title_matched);
-    PHPUnit_Framework_Assert::assertTrue($title_matched, "Failed asserting that <$actual_title> is <$expected_title> with optional hash <$ie_hash>.");
+    PHPUnit_Framework_Assert::assertTrue($title_matched, "Failed assertion: actual title <$actual_title> is not expected title <$expected_title> with optional hash <$ie_hash>.");
   }
   
   public function assert_element_present($element_locator) {

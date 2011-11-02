@@ -1,5 +1,7 @@
 <?php
 
+require 'WebElement.php';
+
 class WebDriver_Driver {
   protected $session_id;
   protected $server_url;

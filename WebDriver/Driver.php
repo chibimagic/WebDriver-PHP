@@ -190,7 +190,58 @@ class WebDriver_Driver {
     $element_id = WebDriver::GetJSONValue($response, "ELEMENT");
     return new WebDriver_WebElement($this, $element_id, $locator);
   }
-  
+
+  // Added 31-oct-11, dbyron
+  public function wait_for_selected_window($window_handle,$end_time = NULL) {
+    $start_time = time();
+    if ($end_time == NULL)
+    {
+        $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
+    }
+    do {
+        echo "wait_for_selected_window: calling get_window_handle\n";
+        $current_selected_window = $this->get_window_handle();
+        echo "wait_for_selected_window: back from get_window_handle\n";
+        if ($window_handle == $current_selected_window)
+        {
+            return;
+        }
+    } while (time() < $end_time);
+    throw new Exception("timeout waiting for window handle " . $window_handle . " to be the currently selected window");
+  }
+
+  // Added 22-aug-11, dbyron
+  public function wait_for_element($locator,$end_time = NULL) {
+    $start_time = time();
+    if ($end_time == NULL)
+    {
+        $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
+    }
+    do {
+        $retval = $this->get_element($locator);
+        if ($retval)
+        {
+            return $retval;
+        }
+    } while (time() < $end_time);
+    throw new Exception("timeout looking for element \"" . $locator . "\"");
+  }
+
+  // Added 22-aug-11, dbyron
+  public function wait_for_element_value($locator,$compare_func) {
+    $start_time = time();
+    $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
+    $element = $this->wait_for_element($locator,$end_time);
+    do {
+        $this_value = $element->get_value();
+        if ($compare_func($this_value))
+        {
+            return;
+        }
+    } while (time() < $end_time);
+    throw new Exception("timeout waiting for value of element \"" . $locator . "\", last value: \"" . $this_value . "\"");
+  }
+
   // WebDriver can do implicit waits for AJAX elements, but sometimes you need explicit reloads
   // Note: is_element_present() will use the wait time, if any, that you've set with set_implicit_wait()
   public function get_element_reload($locator, $max_wait_minutes = 2) {
@@ -474,7 +525,29 @@ class WebDriver_Driver {
   public function click()         { $this->click_mouse(0); }
   public function middle_click()  { $this->click_mouse(1); }
   public function right_click()   { $this->click_mouse(2); }
-  
+
+  // Added 27-oct-11, dbyron)
+  public function safe_click($element,$expected_title_after_click) {
+      // For some reason asking Selenium to click isn't
+      // reliable.  Even when it responds with what looks
+      // like a successful HTTP response, the browser
+      // doesn't navigate to the page.
+      $element->click();
+
+      try
+      {
+          $this->assert_title($expected_title_after_click);
+      }
+      catch (Exception $ex)
+      {
+          // Failing once is OK.  Try clicking again.
+          $element->click();
+
+          // If this fails, we let the exception go.
+          $this->assert_title($expected_title_after_click);
+      }
+  }
+
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/buttondown
   public function click_and_hold() {
     $this->execute("POST", "/session/:sessionId/buttondown");

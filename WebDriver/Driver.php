@@ -437,14 +437,14 @@ class WebDriver_Driver {
     );
     $this->execute("POST", "/session/:sessionId/modifier", $payload);
   }
-  public function ctrl_down()     { send_modifier("U+E009", true); }
-  public function ctrl_up()       { send_modifier("U+E009", false); }
-  public function shift_down()    { send_modifier("U+E008", true); }
-  public function shift_up()      { send_modifier("U+E008", false); }
-  public function alt_down()      { send_modifier("U+E00A", true); }
-  public function alt_up()        { send_modifier("U+E00A", false); }
-  public function command_down()  { send_modifier("U+E03D", true); }
-  public function command_up()    { send_modifier("U+E03D", false); }
+  public function ctrl_down()     { $this->send_modifier("U+E009", true); }
+  public function ctrl_up()       { $this->send_modifier("U+E009", false); }
+  public function shift_down()    { $this->send_modifier("U+E008", true); }
+  public function shift_up()      { $this->send_modifier("U+E008", false); }
+  public function alt_down()      { $this->send_modifier("U+E00A", true); }
+  public function alt_up()        { $this->send_modifier("U+E00A", false); }
+  public function command_down()  { $this->send_modifier("U+E03D", true); }
+  public function command_up()    { $this->send_modifier("U+E03D", false); }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/orientation
   // Not supported as of Selenium 2.0b3

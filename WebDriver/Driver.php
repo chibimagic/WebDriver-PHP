@@ -39,7 +39,7 @@ class WebDriver_Driver {
     $response = $this->execute("POST", "/session", $payload);
     
     // Parse out session id
-    preg_match("/\nLocation:.*\/(.*)\n/", $response['header'], $matches);
+    preg_match('/\nLocation:.*\/(.*)\n/', $response['header'], $matches);
     if (!empty($response['body'])) {
       $additional_info = $response['body'];
     } else if (!empty($response['header'])) {

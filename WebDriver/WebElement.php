@@ -157,27 +157,32 @@ class WebDriver_WebElement {
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/click
   public function click() {
     $this->execute("POST", "/click");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/submit
   public function submit() {
     $this->execute("POST", "/submit");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/clear
   public function clear() {
     $this->execute("POST", "/clear");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/hover
   public function hover() {
     // $this->execute("POST", "/hover"); // Not supported as of Selenium 2.0rc3
     $this->move_cursor_to_center(); // Workaround until /hover is implemented
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/selected
   public function select() {
     $this->click(); // POST /session/:sessionId/element/:id/selected is deprecated as of Selenium 2.0.0
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/toggle
@@ -190,6 +195,7 @@ class WebDriver_WebElement {
   public function send_keys($keys) {
     $payload = array("value" => preg_split('//u', $keys, -1, PREG_SPLIT_NO_EMPTY));
     $this->execute("POST", "/value", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/drag
@@ -199,12 +205,14 @@ class WebDriver_WebElement {
       "y" => $pixels_down
     );
     $this->execute("POST", "/drag", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/moveto
   public function move_cursor_to_center() {
     $payload = array("element" => $this->element_id);
     $this->driver->execute("POST", "/session/:sessionId/moveto", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/moveto
@@ -215,6 +223,7 @@ class WebDriver_WebElement {
       "yoffset" => $down,
     );
     $this->driver->execute("POST", "/session/:sessionId/moveto", $payload);
+    return $this;
   }
   
   /********************************************************************
@@ -223,21 +232,25 @@ class WebDriver_WebElement {
 
   public function select_label($label) {
     $this->get_next_element("//option[text()=" . WebDriver::QuoteXPath($label) . "]")->select();
+    return $this;
   }
   
   public function select_value($value) {
     $this->get_next_element("//option[@value=" . WebDriver::QuoteXPath($value) . "]")->select();
+    return $this;
   }
   
   // 1-based index
   public function select_index($index) {
     $this->get_next_element("//option[" . $index . "]")->select();
+    return $this;
   }
   
   public function select_random() {
     $all_elements = $this->get_options();
     $new_index = rand(1, count($all_elements));
     $this->select_index($new_index);
+    return $this;
   }
   
   /********************************************************************

@@ -276,6 +276,11 @@ class WebDriver_WebElement {
     PHPUnit_Framework_Assert::assertFalse($this->contains_element($child_locator), "Failed asserting that <{$this->locator}> does not contain <$child_locator>.");
   }
   
+  public function assert_next_element_account($expected_count, $locator) {
+    $actual_next_elements = $this->get_all_next_elements($locator);
+    PHPUnit_Framework_Assert::assertEquals($expected_count, count($actual_next_elements), "Failed asserting that <{$this->locator}> is followed by <$expected_count> instances of <$locator>");
+  }
+  
   public function assert_text($expected_text) {
     $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
     do {

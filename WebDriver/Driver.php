@@ -324,20 +324,23 @@ class WebDriver_Driver {
   // IE appends the anchor tag to the window title, but only when it's done loading
   // Example: $driver->select_window("My Cool Page", "#chapter7") finds the window called "My Cool Page#chapter7" or "My Cool Page" in IE, and "My Cool Page" in all other browsers
   public function select_window($window_title, $ie_hash = '') {
+    $start_time = time();
+    $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
     $all_window_handles = $this->get_all_window_handles();
     $all_titles = array();
-    $current_title = "";
     $found_window = false;
-    foreach ($all_window_handles as $window_handle) {
-      $payload = array("name" => $window_handle);
-      $this->execute("POST", "/session/:sessionId/window", $payload);
-      $current_title = $this->get_title();
-      $all_titles[] = $current_title;
-      if ($current_title == $window_title || ($this->browser == 'internet explorer' && $current_title == $window_title . $ie_hash)) {
-        $found_window = true;
-        break;
+    do {
+      for ($i = 0; $i < count($all_window_handles); $i++) {
+        $payload = array("name" => $all_window_handles[$i]);
+        $this->execute("POST", "/session/:sessionId/window", $payload);
+        $current_title = $this->get_title();
+        $all_titles[$i] = $current_title;
+        if ($current_title == $window_title || ($this->browser == 'internet explorer' && $current_title == $window_title . $ie_hash)) {
+          $found_window = true;
+          break;
+        }
       }
-    }
+    } while (time() < $end_time && !$found_window);
     PHPUnit_Framework_Assert::assertTrue($found_window, "Could not find window with title <$window_title> and optional hash <$ie_hash>. Found " . count($all_titles) . " windows: " . implode("; ", $all_titles));
   }
   

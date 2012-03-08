@@ -289,6 +289,16 @@ class WebDriver_WebElement {
     PHPUnit_Framework_Assert::assertEquals($expected_text, $actual_text, "Failed asserting that <{$this->locator}>'s text is <$expected_text>.");
   }
   
+  // Reload the page until this element's text matches what's expected
+  public function assert_text_reload($expected_text) {
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
+    do {
+      $this->reload();
+      $actual_text = $this->get_text();
+    } while (time() < $end_time && $actual_text != $expected_text);
+    PHPUnit_Framework_Assert::assertEquals($expected_text, $actual_text, "Failed asserting that <{$this->locator}>'s text is <$expected_text> after " . WebDriver::$ImplicitWaitMS/1000 . " seconds.");
+  }
+  
   public function assert_text_contains($expected_needle) {
     $actual_haystack = $this->get_text();
     PHPUnit_Framework_Assert::assertContains($expected_needle, $actual_haystack, "Failed asserting that <{$this->locator}>'s text contains <$expected_needle>.\n$actual_haystack");

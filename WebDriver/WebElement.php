@@ -294,7 +294,8 @@ class WebDriver_WebElement {
     $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
     do {
       $this->driver->reload();
-      $actual_text = $this->get_text();
+      $element_in_new_dom = $this->driver->get_element($this->locator);
+      $actual_text = $element_in_new_dom->get_text();
     } while (time() < $end_time && $actual_text != $expected_text);
     PHPUnit_Framework_Assert::assertEquals($expected_text, $actual_text, "Failed asserting that <{$this->locator}>'s text is <$expected_text> after " . WebDriver::$ImplicitWaitMS/1000 . " seconds.");
   }

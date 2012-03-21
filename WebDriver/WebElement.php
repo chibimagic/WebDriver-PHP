@@ -1,9 +1,9 @@
 <?php
 
 class WebDriver_WebElement {
-  private $driver;
-  private $element_id;
-  private $locator;
+  protected $driver;
+  protected $element_id;
+  protected $locator;
   
   public function __construct($driver, $element_id, $locator) {
     $this->driver = $driver;

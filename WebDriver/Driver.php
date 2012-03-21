@@ -39,7 +39,7 @@ class WebDriver_Driver {
     $response = $this->execute("POST", "/session", $payload);
     
     // Parse out session id
-    preg_match("/\nLocation:.*\/(.*)\n/", $response['header'], $matches);
+    preg_match('/\nLocation:.*\/(.*)\n/', $response['header'], $matches);
     if (!empty($response['body'])) {
       $additional_info = $response['body'];
     } else if (!empty($response['header'])) {
@@ -290,6 +290,7 @@ class WebDriver_Driver {
   public function set_async_timeout($milliseconds) {
     $payload = array("ms" => $milliseconds);
     $this->execute("POST", "/session/:sessionId/timeouts/async_script", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/timeouts/implicit_wait
@@ -297,27 +298,32 @@ class WebDriver_Driver {
     WebDriver::$ImplicitWaitMS = $milliseconds;
     $payload = array("ms" => $milliseconds);
     $this->execute("POST", "/session/:sessionId/timeouts/implicit_wait", $payload);
+    return $this;
   }
 
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/url
   public function load($url) {
     $payload = array("url" => $url);
     $this->execute("POST", "/session/:sessionId/url", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/forward
   public function go_forward() {
     $this->execute("POST", "/session/:sessionId/forward");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/back
   public function go_back() {
     $this->execute("POST", "/session/:sessionId/back");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/refresh
   public function reload() {
     $this->execute("POST", "/session/:sessionId/refresh");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/window
@@ -347,24 +353,28 @@ class WebDriver_Driver {
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/window
   public function close_window() {
     $this->execute("DELETE", "/session/:sessionId/window");
+    return $this;
   }
   
   public function maximize_window() {
     $this->execute_js_sync("window.moveTo(0,0)");
     $this->execute_js_sync("window.resizeTo(screen.width,screen.height)");
     $this->execute_js_sync("window.focus()");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/deactivate
   // Not supported as of Selenium 2.0b3
   public function deactivate_ime() {
     $this->execute("POST", "/session/:sessionId/ime/deactivate");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/activate
   // Not supported as of Selenium 2.0b3
   public function activate_ime() {
     $this->execute("POST", "/session/:sessionId/ime/activate");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/frame
@@ -374,6 +384,7 @@ class WebDriver_Driver {
     }
     $payload = array("id" => $identifier);
     $this->execute("POST", "/session/:sessionId/frame", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/cookie
@@ -395,16 +406,19 @@ class WebDriver_Driver {
       $payload['cookie']['expiry'] = $expiry;
     }
     $this->execute("POST", "/session/:sessionId/cookie", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/cookie
   public function delete_all_cookies() {
     $this->execute("DELETE", "/session/:sessionId/cookie");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/cookie/:name
   public function delete_cookie($name) {
     $this->execute("DELETE", "/session/:sessionId/cookie/" . $name);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/execute
@@ -430,6 +444,7 @@ class WebDriver_Driver {
   public function set_input_speed($speed) {
     $payload = array("speed" => $speed);
     $this->execute("POST", "/session/:sessionId/speed", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/modifier
@@ -439,24 +454,26 @@ class WebDriver_Driver {
       'isdown' => $is_down
     );
     $this->execute("POST", "/session/:sessionId/modifier", $payload);
+    return $this;
   }
-  public function ctrl_down()     { send_modifier("U+E009", true); }
-  public function ctrl_up()       { send_modifier("U+E009", false); }
-  public function shift_down()    { send_modifier("U+E008", true); }
-  public function shift_up()      { send_modifier("U+E008", false); }
-  public function alt_down()      { send_modifier("U+E00A", true); }
-  public function alt_up()        { send_modifier("U+E00A", false); }
-  public function command_down()  { send_modifier("U+E03D", true); }
-  public function command_up()    { send_modifier("U+E03D", false); }
+  public function ctrl_down()     { return $this->send_modifier("U+E009", true); }
+  public function ctrl_up()       { return $this->send_modifier("U+E009", false); }
+  public function shift_down()    { return $this->send_modifier("U+E008", true); }
+  public function shift_up()      { return $this->send_modifier("U+E008", false); }
+  public function alt_down()      { return $this->send_modifier("U+E00A", true); }
+  public function alt_up()        { return $this->send_modifier("U+E00A", false); }
+  public function command_down()  { return $this->send_modifier("U+E03D", true); }
+  public function command_up()    { return $this->send_modifier("U+E03D", false); }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/orientation
   // Not supported as of Selenium 2.0b3
   private function set_orientation($new_orientation) {
     $payload = array("orientation", $new_orientation);
     $this->execute("POST", "/session/:sessionId/orientation", $payload);
+    return $this;
   }
-  public function rotate_landscape()  { $this->set_orientation("LANDSCAPE"); }
-  public function rotate_portrait()   { $this->set_orientation("PORTRAIT"); }
+  public function rotate_landscape()  { return $this->set_orientation("LANDSCAPE"); }
+  public function rotate_portrait()   { return $this->set_orientation("PORTRAIT"); }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/moveto
   public function move_cursor($right, $down) {
@@ -465,6 +482,7 @@ class WebDriver_Driver {
       "yoffset" => $down
     );
     $this->execute("POST", "/session/:sessionId/moveto", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/click
@@ -472,57 +490,66 @@ class WebDriver_Driver {
     $payload = array("button" => $button);
     $this->execute("POST", "/session/:sessionId/click", $payload);
   }
-  public function click()         { $this->click_mouse(0); }
-  public function middle_click()  { $this->click_mouse(1); }
-  public function right_click()   { $this->click_mouse(2); }
+  public function click()         { return $this->click_mouse(0); }
+  public function middle_click()  { return $this->click_mouse(1); }
+  public function right_click()   { return $this->click_mouse(2); }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/buttondown
   public function click_and_hold() {
     $this->execute("POST", "/session/:sessionId/buttondown");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/buttonup
   public function release_click() {
     $this->execute("POST", "/session/:sessionId/buttonup");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/doubleclick
   public function double_click() {
     $this->execute("POST", "/session/:sessionId/doubleclick");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/alert_text
   public function type_alert($text) {
     $payload = array("keysToSend" => $text);
     $this->execute("POST", "/session/:sessionId/alert_text", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/accept_alert
   public function accept_alert() {
     $this->execute("POST", "/session/:sessionId/accept_alert");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/dismiss_alert
   public function dismiss_alert() {
     $this->execute("POST", "/session/:sessionId/dismiss_alert");
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/click
   public function single_tap($element_id) {
     $payload = array("element" => $element_id);
     $this->execute("POST", "/session/:sessionId/touch/click", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/doubleclick
   public function double_tap($element_id) {
     $payload = array("element" => $element_id);
     $this->execute("POST", "/session/:sessionId/touch/doubleclick", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/longclick
   public function long_tap($element_id) {
     $payload = array("element" => $element_id);
     $this->execute("POST", "/session/:sessionId/touch/longclick", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/down
@@ -532,6 +559,7 @@ class WebDriver_Driver {
       "y" => $y_coordinate,
     );
     $this->execute("POST", "/session/:sessionId/touch/down", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/up
@@ -541,6 +569,7 @@ class WebDriver_Driver {
       "y" => $y_coordinate,
     );
     $this->execute("POST", "/session/:sessionId/touch/up", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/move
@@ -550,6 +579,7 @@ class WebDriver_Driver {
       "y" => $y_coordinate,
     );
     $this->execute("POST", "/session/:sessionId/touch/move", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/scroll
@@ -560,6 +590,7 @@ class WebDriver_Driver {
       "yOffset" => $pixels_offset_y,
     );
     $this->execute("POST", "/session/:sessionId/touch/scroll", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/touch/scroll
@@ -569,6 +600,7 @@ class WebDriver_Driver {
       "yOffset" => $pixels_offset_y,
     );
     $this->execute("POST", "/session/:sessionId/touch/scroll", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#session/:sessionId/touch/flick
@@ -580,6 +612,7 @@ class WebDriver_Driver {
       "speed" => $pixels_per_second,
     );
     $this->execute("POST", "/session/:sessionId/touch/flick", $payload);
+    return $this;
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#session/:sessionId/touch/flick
@@ -589,6 +622,7 @@ class WebDriver_Driver {
       "ySpeed" => $pixels_per_second_y,
     );
     $this->execute("POST", "/session/:sessionId/touch/flick", $payload);
+    return $this;
   }
   
   // See https://saucelabs.com/docs/sauce-ondemand#alternative-annotation-methods
@@ -598,6 +632,7 @@ class WebDriver_Driver {
       $url_parts = parse_url($this->server_url);
       WebDriver::Curl("PUT", "http://" . $url_parts['user'] . ":" . $url_parts['pass'] . "@saucelabs.com/rest/v1/" . $url_parts['user'] . "/jobs/" . $this->session_id, $payload);
     }
+    return $this;
   }
   
   /********************************************************************

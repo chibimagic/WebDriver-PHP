@@ -39,7 +39,7 @@ class WebDriverColorTest extends PHPUnit_Framework_TestCase {
   
   /**
    * @dataProvider invalid_colors
-   * @expectedException Exception
+   * @expectedException PHPUnit_Framework_ExpectationFailedException
    */
   public function test_invalid_colors($input) {
     WebDriver::CanonicalizeCSSColor($input);

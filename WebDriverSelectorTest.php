@@ -62,7 +62,7 @@ class WebDriverSelectorTest extends PHPUnit_Framework_TestCase {
   
   /**
    * @dataProvider invalid_selectors
-   * @expectedException Exception
+   * @expectedException WebDriver_Exception
    */
   public function test_invalid_selectors($input) {
     WebDriver::ParseLocator($input);

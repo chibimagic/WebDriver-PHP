@@ -1,5 +1,7 @@
 <?php
 
+require_once 'WebDriver/Exception.php';
+
 class WebDriver {
   public static $ImplicitWaitMS = 0;
   
@@ -68,7 +70,7 @@ class WebDriver {
     if (isset(self::$keys[$name])) {
       return json_decode('"' . self::$keys[$name] . '"');
     } else {
-      throw new Exception("Can't type key $name");
+      throw new WebDriver_Exception("Can't type key $name");
     }
   }
 
@@ -131,7 +133,7 @@ class WebDriver {
         $strategy = "xpath";
         $value = $locator;
       } else if (substr($locator, 0, 9) === "document." || substr($locator, 0, 4) === "dom=") {
-        throw new Exception("DOM selectors aren't supported in WebDriver: $locator");
+        throw new WebDriver_Exception("DOM selectors aren't supported in WebDriver: $locator");
       } else { // Fall back to id
         $strategy = "id";
         $value = $locator;
@@ -148,7 +150,7 @@ class WebDriver {
     } else if (!$contains_double_quote) {
       return '"' . $value . '"';
     } else {
-      $parts = split("'", $value);
+      $parts = preg_split("/'/", $value);
       return "concat('" . implode("', \"'\", '", $parts) . "')";
     }
   }
@@ -175,6 +177,7 @@ class WebDriver {
       'teal' => '008080',
       'aqua' => '00FFFF',
     );
+    $six_hex = null;
     if (preg_match('/^rgb\(([0-9]+),\s*([0-9]+),\s*([0-9]+)\)$/', $color, $rgb)) {
       // rgb(255, 255, 255) -> ffffff
       if (0 <= $rgb[1] && $rgb[1] <= 255 && 0 <= $rgb[2] && $rgb[2] <= 255 && 0 <= $rgb[3] && $rgb[3] <= 255) {

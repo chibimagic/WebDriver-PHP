@@ -630,6 +630,10 @@ class WebDriver_Driver {
     PHPUnit_Framework_Assert::assertFalse($this->is_element_present($element_locator), "Failed asserting that <$element_locator> is not present");
   }
   
+  public function assert_element_count($locator, $expected_count) {
+    PHPUnit_Framework_Assert::assertEquals($expected_count, count($this->get_all_elements($locator)), "Failed asserting that <$element_locator> appears $expected_count times.");
+  }
+  
   public function assert_string_present($expected_string) {
     $page_text = $this->get_text();
     PHPUnit_Framework_Assert::assertContains($expected_string, $page_text, "Failed asserting that page text contains <$expected_string>.\n$page_text");

@@ -631,7 +631,7 @@ class WebDriver_Driver {
   }
   
   public function assert_element_count($locator, $expected_count) {
-    PHPUnit_Framework_Assert::assertEquals($expected_count, count($this->get_all_elements($locator)), "Failed asserting that <$element_locator> appears $expected_count times.");
+    PHPUnit_Framework_Assert::assertEquals($expected_count, count($this->get_all_elements($locator)), "Failed asserting that <$locator> appears $expected_count times.");
   }
   
   public function assert_string_present($expected_string) {

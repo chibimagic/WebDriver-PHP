@@ -145,6 +145,16 @@ class WebDriver_WebElement {
     }
   }
   
+  public function get_all_selected() {
+    $selected = array();
+    foreach ($this->get_options() as $option) {
+      if ($option->is_selected()) {
+        $selected[] = $option;
+      }
+    }
+    return $selected;
+  }
+  
   // 1-based index
   public function get_option_index($index) {
     return $this->get_next_element("//option[$index]");
@@ -346,6 +356,11 @@ class WebDriver_WebElement {
   public function assert_option_count($expected_count) {
     $options = $this->get_options();
     PHPUnit_Framework_Assert::assertEquals($expected_count, count($options), "Failed asserting that <{$this->locator}> contains $expected_count options.");
+  }
+  
+  public function assert_selected_count($expected_count) {
+    $selected = $this->get_all_selected();
+    PHPUnit_Framework_Assert::assertEquals($expected_count, count($selected), "Failed asserting that <{$this->locator}> contains $expected_count selected options.");
   }
   
   public function assert_contains_label($expected_label) {

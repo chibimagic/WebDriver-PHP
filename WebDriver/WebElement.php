@@ -15,6 +15,18 @@ class WebDriver_WebElement {
     return $this->driver->execute($http_type, "/session/:sessionId/element/" . $this->element_id . $relative_url, $payload);
   }
   
+  public function get_driver() {
+    return $this->driver;
+  }
+  
+  public function get_element_id() {
+    return $this->element_id;
+  }
+  
+  public function get_locator() {
+    return $this->locator;
+  }
+  
   /********************************************************************
    * Getters
    */

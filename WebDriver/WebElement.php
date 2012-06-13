@@ -277,7 +277,7 @@ class WebDriver_WebElement {
   public function assert_hidden() {
     $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
     do {
-      $hidden = !this->is_visible();
+      $hidden = !$this->is_visible();
     } while (time() < $end_time && !$hidden);
     PHPUnit_Framework_Assert::assertTrue($hidden, "Failed asserting that <{$this->locator}> is hidden.");
   }

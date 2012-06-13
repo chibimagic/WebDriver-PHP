@@ -267,11 +267,19 @@ class WebDriver_WebElement {
    */
 
   public function assert_visible() {
-    PHPUnit_Framework_Assert::assertTrue($this->is_visible(), "Failed asserting that <{$this->locator}> is visible.");
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
+    do {
+      $visible = $this->is_visible();
+    } while (time() < $end_time && !$visible);
+    PHPUnit_Framework_Assert::assertTrue($visible, "Failed asserting that <{$this->locator}> is visible.");
   }
   
   public function assert_hidden() {
-    PHPUnit_Framework_Assert::assertFalse($this->is_visible(), "Failed asserting that <{$this->locator}> is hidden.");
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
+    do {
+      $hidden = !this->is_visible();
+    } while (time() < $end_time && !$hidden);
+    PHPUnit_Framework_Assert::assertTrue($hidden, "Failed asserting that <{$this->locator}> is hidden.");
   }
 
   public function assert_enabled() {

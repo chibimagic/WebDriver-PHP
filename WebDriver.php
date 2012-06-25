@@ -175,8 +175,10 @@ class WebDriver {
       'teal' => '008080',
       'aqua' => '00FFFF',
     );
-    if (preg_match('/^rgb\(([0-9]+),\s*([0-9]+),\s*([0-9]+)\)$/', $color, $rgb)) {
+    if (preg_match('/^rgb\(([0-9]+),\s*([0-9]+),\s*([0-9]+)\)$/', $color, $rgb) ||
+        preg_match('/^rgba\(([0-9]+),\s*([0-9]+),\s*([0-9]+),\s*([0-9\.]+)\)$/', $color, $rgb)) {
       // rgb(255, 255, 255) -> ffffff
+      // rgba(255, 255, 255, 0.5) -> ffffff
       if (0 <= $rgb[1] && $rgb[1] <= 255 && 0 <= $rgb[2] && $rgb[2] <= 255 && 0 <= $rgb[3] && $rgb[3] <= 255) {
         $six_hex = sprintf('%02X%02X%02X', $rgb[1], $rgb[2], $rgb[3]);
       }

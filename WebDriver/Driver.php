@@ -125,6 +125,18 @@ class WebDriver_Driver {
    * Getters
    */
   
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/status
+  public function get_server_status() {
+    $response = $this->execute("GET", "/status");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/sessions
+  public function get_all_sessions() {
+    $response = $this->execute("GET", "/sessions");
+    return WebDriver::GetJSONValue($response);
+  }
+  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId
   public function get_capabilities() {
     $response = $this->execute("GET", "/session/:sessionId");
@@ -241,6 +253,18 @@ class WebDriver_Driver {
     return WebDriver::GetJSONValue($response);
   }
   
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/window/:windowHandle/size
+  public function get_window_size($window_handle = "current") {
+    $response = $this->execute("GET", "/session/:sessionId/window/{$window_handle}/size");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/window/:windowHandle/position
+  public function get_window_position($window_handle = "current") {
+    $response = $this->execute("GET", "/session/:sessionId/window/{$window_handle}/position");
+    return WebDriver::GetJSONValue($response);
+  }
+  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/speed
   // Not supported as of Selenium 2.0b3
   public function get_input_speed() {
@@ -285,6 +309,14 @@ class WebDriver_Driver {
   /********************************************************************
    * Setters
    */
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/timeouts
+  public function set_timeout($timeout_type, $milliseconds) {
+    $acceptable_timeout_types = array("script", "implicit", "page load");
+    PHPUnit_Framework_Assert::assertTrue(in_array($timeout_type, $acceptable_timeout_types), "First argument must be one of: " . implode(", ", $acceptable_timeout_types));
+    $payload = array("type" => $timeout_type, "ms" => $milliseconds);
+    $this->execute("POST", "/session/:sessionId/timeouts", $payload);
+  }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/timeouts/async_script
   public function set_async_timeout($milliseconds) {
@@ -349,10 +381,27 @@ class WebDriver_Driver {
     $this->execute("DELETE", "/session/:sessionId/window");
   }
   
-  public function maximize_window() {
-    $this->execute_js_sync("window.moveTo(0,0)");
-    $this->execute_js_sync("window.resizeTo(screen.width,screen.height)");
-    $this->execute_js_sync("window.focus()");
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/window/:windowHandle/size
+  public function set_window_size($new_width, $new_height, $window_handle = "current") {
+    $payload = array(
+      "width" => $new_width,
+      "height" => $new_height
+    );
+    $this->execute("POST", "/session/:sessionId/window/{$window_handle}/size", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/window/:windowHandle/position
+  public function set_window_position($new_x, $new_y, $window_handle = "current") {
+    $payload = array(
+      "x" => $new_x,
+      "y" => $new_y
+    );
+    $this->execute("POST", "/session/:sessionId/window/{$window_handle}/position", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/window/:windowHandle/maximize
+  public function maximize_window($window_handle = "current") {
+    $this->execute("POST", "/session/:sessionId/window/{$window_handle}/maximize");
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/deactivate
@@ -432,6 +481,12 @@ class WebDriver_Driver {
     $this->execute("POST", "/session/:sessionId/speed", $payload);
   }
   
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/keys
+  public function send_keys($keys) {
+    $payload = array("value" => preg_split('//u', $keys, -1, PREG_SPLIT_NO_EMPTY));
+    $this->execute("POST", "/session/:sessionId/keys", $payload);
+  }
+  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/modifier
   private function send_modifier($modifier_code, $is_down) {
     $payload = array(
@@ -493,7 +548,7 @@ class WebDriver_Driver {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/alert_text
   public function type_alert($text) {
-    $payload = array("keysToSend" => $text);
+    $payload = array("text" => $text);
     $this->execute("POST", "/session/:sessionId/alert_text", $payload);
   }
   
@@ -589,6 +644,96 @@ class WebDriver_Driver {
       "ySpeed" => $pixels_per_second_y,
     );
     $this->execute("POST", "/session/:sessionId/touch/flick", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/location
+  public function get_geographical_location() {
+    $response = $this->execute("GET", "/session/:sessionId/location");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/location
+  public function set_geographical_location($new_latitude, $new_longitude, $new_altitude) {
+    $payload = array(
+      'latitude' => $new_latitude,
+      'longitude' => $new_longitude,
+      'altitude' => $new_altitude
+    );
+    $this->execute("POST", "/session/:sessionId/location", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/local_storage
+  public function get_all_local_storage_keys() {
+    $response = $this->execute("GET", "/session/:sessionId/local_storage");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/local_storage
+  public function set_local_storage_item($key, $new_value) {
+    $payload = array(
+      'key' => $key,
+      'value' => $new_value
+    );
+    $this->execute("POST", "/session/:sessionId/local_storage", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/local_storage
+  public function delete_all_local_storage() {
+    $this->execute("DELETE", "/session/:sessionId/local_storage");
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/local_storage/key/:key
+  public function get_local_storage_item($key) {
+    $response = $this->execute("GET", "/session/:sessionId/local_storage/key/{$key}");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/local_storage/key/:key
+  public function delete_local_storage_item($key) {
+    $this->execute("DELETE", "/session/:sessionId/local_storage/key/{$key}");
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/local_storage/size
+  public function get_local_storage_count() {
+    $response = $this->execute("GET", "/session/:sessionId/local_storage/size");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/session_storage
+  public function get_all_session_storage_keys() {
+    $response = $this->execute("GET", "/session/:sessionId/session_storage");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/session_storage
+  public function set_session_storage_item($key, $new_value) {
+    $payload = array(
+      'key' => $key,
+      'value' => $new_value
+    );
+    $this->execute("POST", "/session/:sessionId/session_storage", $payload);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/session_storage
+  public function delete_all_session_storage() {
+    $this->execute("DELETE", "/session/:sessionId/session_storage");
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/session_storage/key/:key
+  public function get_session_storage_item($key) {
+    $response = $this->execute("GET", "/session/:sessionId/session_storage/key/{$key}");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/session_storage/key/:key
+  public function delete_session_storage_item($key) {
+    $this->execute("DELETE", "/session/:sessionId/session_straoge/key/{$key}");
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/session_storage/size
+  public function get_session_storage_count() {
+    $response = $this->execute("GET", "/session/:sessionId/session_storage/size");
+    return WebDriver::GetJSONValue($response);
   }
   
   // See https://saucelabs.com/docs/sauce-ondemand#alternative-annotation-methods

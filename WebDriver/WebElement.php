@@ -111,6 +111,12 @@ class WebDriver_WebElement {
     return WebDriver::GetJSONValue($response);
   }
   
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/location_in_view
+  public function get_location_in_view() {
+    $response = $this->execute("GET", "/location_in_view");
+    return WebDriver::GetJSONValue($response);
+  }
+  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/size
   public function get_size() {
     $response = $this->execute("GET", "/size");

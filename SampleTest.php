@@ -5,15 +5,28 @@ require_once 'WebDriver/Driver.php';
 require_once 'WebDriver/MockDriver.php';
 require_once 'WebDriver/WebElement.php';
 require_once 'WebDriver/MockElement.php';
+require_once 'WebDriver/FirefoxProfile.php';
 
 class SampleTest extends PHPUnit_Framework_TestCase {
   protected $driver;
   
   public function setUp() {
+    // If you want to set preferences in your Firefox profile
+    $fp = new WebDriver_FirefoxProfile();
+    $fp->set_preference("capability.policy.default.HTMLDocument.compatMode", "allAccess");
+    
     // Choose one of the following
     
     // For tests running at Sauce Labs
-//     $this->driver = WebDriver_Driver::InitAtSauce("my-sauce-username", "my-sauce-api-key", "WINDOWS", "firefox", "3.6");
+//     $this->driver = WebDriver_Driver::InitAtSauce(
+//       "my-sauce-username",
+//       "my-sauce-api-key",
+//       "WINDOWS",
+//       "firefox",
+//       "10",
+//       array(
+//         'firefox_profile' => $fp->get_profile()
+//       ));
 //     $sauce_job_name = get_class($this);
 //     $this->driver->set_sauce_context("name", $sauce_job_name);
     

@@ -351,6 +351,11 @@ class WebDriver_WebElement {
     PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s value is <$expected_value>.");
   }
   
+  public function assert_attribute_value($attribute_name, $expected_value) {
+    $actual_value = $this->get_attribute_value($attribute_name);
+    PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s attribute <{$attribute_name}> is <$expected_value>.");
+  }
+  
   // Will pass for "equivalent" CSS colors such as "#FFFFFF" and "white". Pass $canonicalize_colors = false to disable.
   public function assert_css_value($property_name, $expected_value, $canonicalize_colors = true) {
     $actual_value = $this->get_css_value($property_name);

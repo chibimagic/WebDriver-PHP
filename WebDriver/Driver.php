@@ -233,7 +233,8 @@ class WebDriver_Driver {
   
   public function is_element_present($locator) {
     try {
-      $this->get_element($locator);
+      $element = $this->get_element($locator);
+      $element->describe(); // Under certain conditions get_element returns cached information. This tests if the element is actually there.
       $is_element_present = true;
     } catch (Exception $e) {
       $is_element_present = false;

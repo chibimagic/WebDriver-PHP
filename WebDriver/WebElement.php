@@ -356,6 +356,22 @@ class WebDriver_WebElement {
     PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that <{$this->locator}>'s attribute <{$attribute_name}> is <$expected_value>.");
   }
   
+  public function assert_attribute_contains($attribute_name, $expected_needle) {
+    $end_time = time() + WebDriver::$ImplictWaitMS/1000;
+    do {
+      $actual_haystack = $this->get_attribute_value($attribute_name);
+    } while (time() < $end_time && strstr($actual_haystack, $expected_needle) === false);
+    PHPUnit_Framework_Assert::assertContains($expected_needle, $actual_haystack, "Failed asserting that <{$this->locator}>'s attribute <{$attribute_name}> contains <{$expected_needle}>.");
+  }
+  
+  public function assert_attribute_does_not_contain($attribute_name, $expected_missing_needle) {
+    $end_time = time() + WebDriver::$ImplictWaitMS/1000;
+    do {
+      $actual_haystack = $this->get_attribute_value($attribute_name);
+    } while (time() < $end_time && strstr($actual_haystack, $expected_missing_needle) !== false);
+    PHPUnit_Framework_Assert::assertNotContains($expected_missing_needle, $actual_haystack, "Failed asserting that <{$this->locator}>'s attribute <{$attribute_name}> does not contains <{$expected_needle}>.");
+  }
+  
   // Will pass for "equivalent" CSS colors such as "#FFFFFF" and "white". Pass $canonicalize_colors = false to disable.
   public function assert_css_value($property_name, $expected_value, $canonicalize_colors = true) {
     $actual_value = $this->get_css_value($property_name);

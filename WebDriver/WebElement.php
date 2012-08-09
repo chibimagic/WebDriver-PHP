@@ -357,7 +357,7 @@ class WebDriver_WebElement {
   }
   
   public function assert_attribute_contains($attribute_name, $expected_needle) {
-    $end_time = time() + WebDriver::$ImplictWaitMS/1000;
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
     do {
       $actual_haystack = $this->get_attribute_value($attribute_name);
     } while (time() < $end_time && strstr($actual_haystack, $expected_needle) === false);
@@ -365,7 +365,7 @@ class WebDriver_WebElement {
   }
   
   public function assert_attribute_does_not_contain($attribute_name, $expected_missing_needle) {
-    $end_time = time() + WebDriver::$ImplictWaitMS/1000;
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
     do {
       $actual_haystack = $this->get_attribute_value($attribute_name);
     } while (time() < $end_time && strstr($actual_haystack, $expected_missing_needle) !== false);

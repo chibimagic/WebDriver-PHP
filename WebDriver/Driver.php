@@ -463,7 +463,8 @@ class WebDriver_Driver {
       "script" => $javascript,
       "args" => $arguments,
     );
-    return $this->execute("POST", "/session/:sessionId/execute", $payload);
+    $response = $this->execute("POST", "/session/:sessionId/execute", $payload);
+    return WebDriver::GetJSONValue($response);
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/execute_async
@@ -472,7 +473,8 @@ class WebDriver_Driver {
       "script" => $javascript,
       "args" => $arguments,
     );
-    return $this->execute("POST", "/session/:sessionId/execute_async", $payload);
+    $response = $this->execute("POST", "/session/:sessionId/execute_async", $payload);
+    return WebDriver::GetJSONValue($response);
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/speed

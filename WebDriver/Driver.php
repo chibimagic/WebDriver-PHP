@@ -779,7 +779,12 @@ class WebDriver_Driver {
   }
   
   public function assert_element_count($locator, $expected_count) {
-    PHPUnit_Framework_Assert::assertEquals($expected_count, count($this->get_all_elements($locator)), "Failed asserting that <$locator> appears $expected_count times.");
+    $start_time = time();
+    $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
+    do {
+      $actual_count = count($this->get_all_elements($locator));
+    } while (time() < $end_time && $actual_count != $expected_count);
+    PHPUnit_Framework_Assert::assertEquals($expected_count, $actual_count, "Failed asserting that <$locator> appears $expected_count times.");
   }
   
   public function assert_string_present($expected_string) {

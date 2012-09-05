@@ -148,7 +148,7 @@ class WebDriver {
     } else if (!$contains_double_quote) {
       return '"' . $value . '"';
     } else {
-      $parts = split("'", $value);
+      $parts = preg_split("/'/", $value);
       return "concat('" . implode("', \"'\", '", $parts) . "')";
     }
   }

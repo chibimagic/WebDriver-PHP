@@ -20,7 +20,7 @@ consecutive''''quotes
 consecutive""""quotes
 consecutive'"'"'mixedquotes
 EOT;
-    $test_data = split("\n", $strings);
+    $test_data = preg_split("/\n/", $strings);
     foreach ($test_data as &$data) {
       $data = array($data);
     }

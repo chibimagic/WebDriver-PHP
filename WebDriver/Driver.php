@@ -29,6 +29,8 @@ class WebDriver_Driver {
     30 => array("IMENotAvailable", "IME was not available."),
     31 => array("IMEEngineActivationFailed", "An IME engine could not be started."),
     32 => array("InvalidSelector", "Argument was an invalid selector (e.g. XPath/CSS)."),
+    33 => array("SessionNotCreatedException", "A new session could not be created."),
+    34 => array("MoveTargetOutOfBounds", "Target provided for a move action is out of bounds."),
   );
   
   protected function __construct($server_url, $capabilities) {

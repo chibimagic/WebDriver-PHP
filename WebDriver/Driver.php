@@ -176,21 +176,18 @@ class WebDriver_Driver {
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/available_engines
-  // Not supported as of Selenium 2.0b3
   public function get_all_ime_engines() {
     $response = $this->execute("GET", "/session/:sessionId/ime/available_engines");
     return WebDriver::GetJSONValue($response);
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/active_engine
-  // Not supported as of Selenium 2.0b3
   public function get_ime_engine() {
     $response = $this->execute("GET", "/session/:sessionId/ime/active_engine");
     return WebDriver::GetJSONValue($response);
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/activated
-  // Not supported as of Selenium 2.0b3
   public function is_ime_active() {
     $response = $this->execute("GET", "/session/:sessionId/ime/activated");
     return WebDriver::GetJSONValue($response);
@@ -269,13 +266,6 @@ class WebDriver_Driver {
     return WebDriver::GetJSONValue($response);
   }
   
-  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/speed
-  // Not supported as of Selenium 2.0b3
-  public function get_input_speed() {
-    $response = $this->execute("GET", "/session/:sessionId/speed");
-    return WebDriver::GetJSONValue($response);
-  }
-  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/cookie
   public function get_all_cookies() {
     $response = $this->execute("GET", "/session/:sessionId/cookie");
@@ -296,7 +286,6 @@ class WebDriver_Driver {
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/orientation
-  // Not supported in iPhone as of Selenium 2.0b3
   private function get_orientation() {
     $response = $this->execute("GET", "/session/:sessionId/orientation");
     return WebDriver::GetJSONValue($response);
@@ -308,6 +297,38 @@ class WebDriver_Driver {
   public function get_alert_text() {
     $response = $this->execute("GET", "/session/:sessionId/alert_text");
     return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/log
+  public function get_log($type) {
+    $payload = array("type" => $type);
+    $response = $this->execute("POST", "/session/:sessionId/log", $payload);
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/log/types
+  public function get_log_types() {
+    $response = $this->execute("GET", "/session/:sessionId/log/types");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/application_cache/status
+  public function get_cache_status_code() {
+    $response = $this->execute("GET", "/session/:sessionId/application_cache/status");
+    return WebDriver::GetJSONValue($response);
+  }
+  
+  public function get_cache_status_string() {
+    $status_code = $this->get_cache_status_code();
+    $status_strings = array(
+      0 => 'UNCACHED',
+      1 => 'IDLE',
+      2 => 'CHECKING',
+      3 => 'DOWNLOADING',
+      4 => 'UPDATE_READY',
+      5 => 'OBSOLETE',
+    );
+    return $status_strings[$status_code];
   }
 
   /********************************************************************
@@ -409,13 +430,11 @@ class WebDriver_Driver {
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/deactivate
-  // Not supported as of Selenium 2.0b3
   public function deactivate_ime() {
     $this->execute("POST", "/session/:sessionId/ime/deactivate");
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/ime/activate
-  // Not supported as of Selenium 2.0b3
   public function activate_ime() {
     $this->execute("POST", "/session/:sessionId/ime/activate");
   }
@@ -480,38 +499,13 @@ class WebDriver_Driver {
     return WebDriver::GetJSONValue($response);
   }
   
-  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/speed
-  // Not supported as of Selenium 2.0b3
-  public function set_input_speed($speed) {
-    $payload = array("speed" => $speed);
-    $this->execute("POST", "/session/:sessionId/speed", $payload);
-  }
-  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/keys
   public function send_keys($keys) {
     $payload = array("value" => preg_split('//u', $keys, -1, PREG_SPLIT_NO_EMPTY));
     $this->execute("POST", "/session/:sessionId/keys", $payload);
   }
   
-  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/modifier
-  private function send_modifier($modifier_code, $is_down) {
-    $payload = array(
-      'value' => $modifier_code,
-      'isdown' => $is_down
-    );
-    $this->execute("POST", "/session/:sessionId/modifier", $payload);
-  }
-  public function ctrl_down()     { send_modifier("U+E009", true); }
-  public function ctrl_up()       { send_modifier("U+E009", false); }
-  public function shift_down()    { send_modifier("U+E008", true); }
-  public function shift_up()      { send_modifier("U+E008", false); }
-  public function alt_down()      { send_modifier("U+E00A", true); }
-  public function alt_up()        { send_modifier("U+E00A", false); }
-  public function command_down()  { send_modifier("U+E03D", true); }
-  public function command_up()    { send_modifier("U+E03D", false); }
-  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/orientation
-  // Not supported as of Selenium 2.0b3
   private function set_orientation($new_orientation) {
     $payload = array("orientation", $new_orientation);
     $this->execute("POST", "/session/:sessionId/orientation", $payload);

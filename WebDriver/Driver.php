@@ -8,6 +8,7 @@ class WebDriver_Driver {
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#Response_Status_Codes
   private static $status_codes = array(
     0 => array("Success", "The command executed successfully."),
+    6 => array("NoSuchDriver", "A session is either terminated or not started"),
     7 => array("NoSuchElement", "An element could not be located on the page using the given search parameters."),
     8 => array("NoSuchFrame", "A request to switch to a frame could not be satisfied because the frame could not be found."),
     9 => array("UnknownCommand", "The requested resource could not be found, or a request was received using an HTTP method that is not supported by the mapped resource."),

@@ -733,7 +733,7 @@ class WebDriver_Driver {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/session_storage/key/:key
   public function delete_session_storage_item($key) {
-    $this->execute("DELETE", "/session/:sessionId/session_straoge/key/{$key}");
+    $this->execute("DELETE", "/session/:sessionId/session_storage/key/{$key}");
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/session_storage/size

@@ -43,12 +43,6 @@ class WebDriver_WebElement {
     return trim(WebDriver::GetJSONValue($response));
   }
   
-  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/value
-  public function get_value() {
-    $response = $this->execute("GET", "/value");
-    return WebDriver::GetJSONValue($response);
-  }
-  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/displayed
   public function is_visible() {
     $response = $this->execute("GET", "/displayed");
@@ -199,7 +193,6 @@ class WebDriver_WebElement {
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/hover
   public function hover() {
-    // $this->execute("POST", "/hover"); // Not supported as of Selenium 2.0rc3
     $this->move_cursor_to_center(); // Workaround until /hover is implemented
   }
   
@@ -207,26 +200,11 @@ class WebDriver_WebElement {
   public function select() {
     $this->click(); // POST /session/:sessionId/element/:id/selected is deprecated as of Selenium 2.0.0
   }
-  
-  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/toggle
-  public function toggle() {
-    $response = $this->execute("POST", "/toggle");
-    return WebDriver::GetJSONValue($response);
-  }
 
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/value
   public function send_keys($keys) {
     $payload = array("value" => preg_split('//u', $keys, -1, PREG_SPLIT_NO_EMPTY));
     $this->execute("POST", "/value", $payload);
-  }
-  
-  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/drag
-  public function drag_and_drop($pixels_right, $pixels_down) {
-    $payload = array(
-      "x" => $pixels_right,
-      "y" => $pixels_down
-    );
-    $this->execute("POST", "/drag", $payload);
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/moveto

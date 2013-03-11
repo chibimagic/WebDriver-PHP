@@ -362,6 +362,11 @@ class WebDriver_WebElement {
     }
   }
   
+  public function assert_css_value_contains($property_name, $expected_needle) {
+    $actual_haystick = $this->get_css_value($property_name);
+    PHPUnit_Framework_Assert::assertContains($expected_needle, $actual_haystack, "Failed asserting that <{$this->locator}>'s <{$property_name}> contains <$expected_needle>.\n$actual_haystack");
+  }
+  
   /********************************************************************
    * Asserters for <select> elements
    */

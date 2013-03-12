@@ -43,6 +43,12 @@ class WebDriver_WebElement {
     return trim(WebDriver::GetJSONValue($response));
   }
   
+  // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/value
+  public function get_value() {
+    $response = $this->execute("GET", "/value");
+    return WebDriver::GetJSONValue($response);
+  }
+  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/displayed
   public function is_visible() {
     $response = $this->execute("GET", "/displayed");

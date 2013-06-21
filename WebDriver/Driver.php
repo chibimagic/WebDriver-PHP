@@ -103,20 +103,19 @@ class WebDriver_Driver {
     $response = WebDriver::Curl($http_type, $full_url, $payload);
     if (isset($response['body'])) {
       $command_info = $http_type . " - " . $full_url . " - " . print_r($payload, true);
-      $this->check_response_status($response['body'], $command_info);
+      $response_json = json_decode(trim($response['body']), true);
+      if (!is_null($response_json)) {
+        $response_status_code = $response_json["status"];
+        PHPUnit_Framework_Assert::assertArrayHasKey($response_status_code, self::$status_codes, "Unknown status code $response_status_code returned from server.\n{$response['body']}");
+        $response_info = $response_status_code . " - " . self::$status_codes[$response_status_code][0] . " - " . self::$status_codes[$response_status_code][1];
+        $additional_info = isset($response_json['value']['message']) ? "Message: " . $response_json['value']['message'] : "Response: " . $response['body'];
+        if ($response_status_code == 10) {
+          throw new WebDriver_StaleElementReferenceException();
+        }
+        PHPUnit_Framework_Assert::assertEquals(0, $response_status_code, "Unsuccessful WebDriver command: $response_info\nCommand: $command_info\n$additional_info");
+      }
     }
     return $response;
-  }
-  
-  private function check_response_status($body, $command_info) {
-    $array = json_decode(trim($body), true);
-    if (!is_null($array)) {
-      $response_status_code = $array["status"];
-      PHPUnit_Framework_Assert::assertArrayHasKey($response_status_code, self::$status_codes, "Unknown status code $response_status_code returned from server.\n$body");
-      $response_info = $response_status_code . " - " . self::$status_codes[$response_status_code][0] . " - " . self::$status_codes[$response_status_code][1];
-      $additional_info = isset($array['value']['message']) ? "Message: " . $array['value']['message'] : "Response: " . $body;
-      PHPUnit_Framework_Assert::assertEquals(0, $response_status_code, "Unsuccessful WebDriver command: $response_info\nCommand: $command_info\n$additional_info");
-    }
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId

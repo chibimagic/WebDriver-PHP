@@ -11,8 +11,13 @@ class WebDriver_WebElement {
     $this->locator = $locator;
   }
   
-  private function execute($http_type, $relative_url, $payload = null) {
-    return $this->driver->execute($http_type, "/session/:sessionId/element/" . $this->element_id . $relative_url, $payload);
+  public function execute($http_type, $relative_url, $payload = null) {
+    try {
+      return $this->driver->execute($http_type, "/session/:sessionId/element/" . $this->element_id . $relative_url, $payload);
+    } catch (WebDriver_StaleElementReferenceException $e) {
+      $element_in_new_dom = $this->driver->get_element($this->locator);
+      return $element_in_new_dom->execute($http_type, $relative_url, $payload);
+    }
   }
   
   public function get_driver() {

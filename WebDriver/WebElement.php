@@ -278,11 +278,19 @@ class WebDriver_WebElement {
   }
 
   public function assert_enabled() {
-    PHPUnit_Framework_Assert::assertTrue($this->is_enabled(), "Failed asserting that <{$this->locator}> is enabled.");
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
+    do {
+      $enabled = $this->is_enabled();
+    } while (time() < $end_time && !$enabled);
+    PHPUnit_Framework_Assert::assertTrue($enabled, "Failed asserting that <{$this->locator}> is enabled.");
   }
   
   public function assert_disabled() {
-    PHPUnit_Framework_Assert::assertFalse($this->is_enabled(), "Failed asserting that <{$this->locator}> is disabled.");
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
+    do {
+      $disabled = !$this->is_enabled();
+    } while (time() < $end_time && !$disabled);
+    PHPUnit_Framework_Assert::assertTrue($disabled, "Failed asserting that <{$this->locator}> is disabled.");
   }
   
   public function assert_selected() {

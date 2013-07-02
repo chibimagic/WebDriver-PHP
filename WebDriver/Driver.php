@@ -771,7 +771,10 @@ class WebDriver_Driver {
   }
   
   public function assert_element_not_present($element_locator) {
+    $implicit_wait = WebDriver::$ImplicitWaitMS;
+    $this->set_implicit_wait(0);
     PHPUnit_Framework_Assert::assertFalse($this->is_element_present($element_locator), "Failed asserting that <$element_locator> is not present");
+    $this->set_implicit_wait($implicit_wait);
   }
   
   public function assert_element_count($locator, $expected_count) {

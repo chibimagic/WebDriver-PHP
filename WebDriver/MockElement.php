@@ -9,7 +9,7 @@ class WebDriver_MockElement extends WebDriver_WebElement {
   public function assert_not_selected() { return true; }
   public function assert_contains_element($child_locator) { return true; }
   public function assert_does_not_contain_element($child_locator) { return true; }
-  public function assert_next_element_count($expected_count, $locator) { return true; }
+  public function assert_next_element_count($locator, $expected_count) { return true; }
   public function assert_text($expected_text) { return true; }
   public function assert_text_reload($expected_text) { return true; }
   public function assert_text_contains($expected_needle) { return true; }

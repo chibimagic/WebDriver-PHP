@@ -203,11 +203,11 @@ class WebDriver_Driver {
   // WebDriver can do implicit waits for AJAX elements, but sometimes you need explicit reloads
   // Note: is_element_present() will use the wait time, if any, that you've set with set_implicit_wait()
   public function get_element_reload($locator, $max_wait_minutes = 2) {
-    $start_time = time();
-    $end_time = $start_time + $max_wait_minutes * 60;
-    while (time() < $end_time && $this->is_element_present($locator) == false) {
+    $end_time = time() + $max_wait_minutes * 60;
+    do {
       $this->reload();
-    }
+      $present = $this->is_element_present($locator);
+    } while (time() < $end_time && !$present);
     return $this->get_element($locator);
   }
   
@@ -221,6 +221,10 @@ class WebDriver_Driver {
       $elements[] = new WebDriver_WebElement($this, $element_id, $locator);
     }
     return $elements;
+  }
+  
+  public function get_element_count($locator) {
+    return count($this->get_all_elements($locator));
   }
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/active
@@ -380,8 +384,7 @@ class WebDriver_Driver {
   // IE appends the anchor tag to the window title, but only when it's done loading
   // Example: $driver->select_window("My Cool Page", "#chapter7") finds the window called "My Cool Page#chapter7" or "My Cool Page" in IE, and "My Cool Page" in all other browsers
   public function select_window($window_title, $ie_hash = '') {
-    $start_time = time();
-    $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
     $all_window_handles = $this->get_all_window_handles();
     $all_titles = array();
     $found_window = false;
@@ -749,16 +752,15 @@ class WebDriver_Driver {
    */
 
   public function assert_url($expected_url) {
-    PHPUnit_Framework_Assert::assertEquals($expected_url, $this->get_url(), "Failed asserting that URL is <$expected_url>.");
+    $url = WebDriver::WaitUntil(array($this, 'get_url'), array(), $expected_url);
+    PHPUnit_Framework_Assert::assertEquals($expected_url, $url, "Failed asserting that URL is <$expected_url>.");
   }
   
   // IE appends the anchor tag to the window title, but only when it's done loading
   // Example: $driver->assert_title("My Cool Page", "#chapter7") asserts that the page title is "My Cool Page#chapter7" in IE, and "My Cool Page" in all other browsers
   // WebDriver does not wait for the page to finish loading before returning the title, so we check repeatedly
   public function assert_title($expected_title, $ie_hash = '') {
-    $start_time = time();
-    $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
-    $title_matched = false;
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
     do {
       $actual_title = $this->get_title();
       $title_matched = ($this->browser == 'internet explorer' && $actual_title == $expected_title . $ie_hash) || ($actual_title == $expected_title);
@@ -781,27 +783,29 @@ class WebDriver_Driver {
     if ($expected_count == 0) {
       $this->assert_element_not_present($locator);
     } else {
-      $start_time = time();
-      $end_time = $start_time + WebDriver::$ImplicitWaitMS/1000;
-      do {
-        $actual_count = count($this->get_all_elements($locator));
-      } while (time() < $end_time && $actual_count != $expected_count);
-      PHPUnit_Framework_Assert::assertEquals($expected_count, $actual_count, "Failed asserting that <$locator> appears $expected_count times.");
+      $count = WebDriver::WaitUntil(array($this, 'get_element_count'), array($locator), $expected_count);
+      PHPUnit_Framework_Assert::assertEquals($expected_count, $count, "Failed asserting that <$locator> appears $expected_count times.");
     }
   }
   
   public function assert_string_present($expected_string) {
-    $page_text = $this->get_text();
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
+    do {
+      $page_text = $this->get_text();
+    } while (time() < $end_time && strstr($page_text, $expected_string) === false);
     PHPUnit_Framework_Assert::assertContains($expected_string, $page_text, "Failed asserting that page text contains <$expected_string>.\n$page_text");
   }
   
   public function assert_string_not_present($expected_missing_string) {
-    $page_text = $this->get_text();
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
+    do {
+      $page_text = $this->get_text();
+    } while (time() < $end_time && strstr($page_text, $expected_missing_string) !== false);
     PHPUnit_Framework_Assert::assertNotContains($expected_missing_string, $page_text, "Failed asserting that page text does not contain <$expected_missing_string>.\n$page_text");
   }
   
   public function assert_alert_text($expected_text) {
-    $actual_text = $this->get_alert_text();
-    PHPUnit_Framework_Assert::assertEquals($expected_text, $actual_text, "Failed asserting that alert text is <$expected_text>.");
+    $text = WebDriver::WaitUntil(array($this, 'get_alert_text'), array(), $expected_text);
+    PHPUnit_Framework_Assert::assertEquals($expected_text, $text, "Failed asserting that alert text is <$expected_text>.");
   }
 }

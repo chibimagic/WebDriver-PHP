@@ -71,6 +71,14 @@ class WebDriver {
       throw new Exception("Can't type key $name");
     }
   }
+  
+  public static function WaitUntil($callback, $parameters, $expected) {
+    $end_time = time() + WebDriver::$ImplicitWaitMS/1000;
+    do {
+      $actual = call_user_func_array($callback, $parameters);
+    } while (time() < $end_time && $expected !== $actual);
+    return $actual;
+  }
 
   public static function Curl($http_type, $full_url, $payload = null, $escape_payload = true) {
     $curl = curl_init($full_url);

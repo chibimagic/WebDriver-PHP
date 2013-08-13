@@ -43,14 +43,7 @@ class WebDriver_Driver {
     
     // Parse out session id
     preg_match("/Location:.*\/(.*)/", $response['header'], $matches);
-    if (!empty($response['body'])) {
-      $additional_info = $response['body'];
-    } else if (!empty($response['header'])) {
-      $additional_info = $response['header'];
-    } else {
-      $additional_info = "No response from server.";
-    }
-    PHPUnit_Framework_Assert::assertEquals(2, count($matches), "Did not get a session id from $server_url\n$additional_info");
+    PHPUnit_Framework_Assert::assertEquals(2, count($matches), "Did not get a session id from $server_url\n" . print_r($response, true));
     $this->session_id = trim($matches[1]);
   }
   

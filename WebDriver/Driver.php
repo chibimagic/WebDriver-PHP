@@ -42,9 +42,15 @@ class WebDriver_Driver {
     $response = $this->execute("POST", "/session", $payload);
     
     // Parse out session id
+    $matches = array();
     preg_match("/Location:.*\/(.*)/", $response['header'], $matches);
-    PHPUnit_Framework_Assert::assertEquals(2, count($matches), "Did not get a session id from $server_url\n" . print_r($response, true));
-    $this->session_id = trim($matches[1]);
+    if (count($matches) === 2) {
+      $this->session_id = trim($matches[1]);
+    } else {
+      // The new Chrome driver returns the session id in the body instead
+      $this->session_id = WebDriver::GetJSONValue($response, "webdriver.remote.sessionid");
+    }
+    PHPUnit_Framework_Assert::assertNotNull($this->session_id, "Did not get a session id from $server_url\n" . print_r($response, true));
   }
   
   public static function InitAtSauce($sauce_username, $sauce_key, $os, $browser, $version = false, $additional_options = array()) {

@@ -41,13 +41,23 @@ class WebDriver_Driver {
     $payload = array("desiredCapabilities" => $capabilities);
     $response = $this->execute("POST", "/session", $payload);
     
-    // Parse out session id
+    // Parse out session id for Selenium <= 2.33.0
     $matches = array();
     preg_match("/Location:.*\/(.*)/", $response['header'], $matches);
     if (count($matches) === 2) {
       $this->session_id = trim($matches[1]);
-    } else {
-      // The new Chrome driver returns the session id in the body instead
+    }
+    if (!$this->session_id) {
+      // Starting with Selenium 2.34.0, the session id is in the body instead
+      if (isset($response['body'])) {
+        $capabilities = json_decode(trim($response['body']), true);
+        if ($capabilities !== null && isset($capabilities['sessionId'])) {
+          $this->session_id = $capabilities['sessionId'];
+        }
+      }
+    }
+    if (!$this->session_id) {
+      // The Chrome driver returns the session id in the value array
       $this->session_id = WebDriver::GetJSONValue($response, "webdriver.remote.sessionid");
     }
     PHPUnit_Framework_Assert::assertNotNull($this->session_id, "Did not get a session id from $server_url\n" . print_r($response, true));

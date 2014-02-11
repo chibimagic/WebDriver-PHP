@@ -373,7 +373,7 @@ class WebDriver_WebElement {
     do {
       $actual_haystack = $this->get_attribute_value($attribute_name);
     } while (time() < $end_time && strstr($actual_haystack, $expected_missing_needle) !== false);
-    PHPUnit_Framework_Assert::assertNotContains($expected_missing_needle, $actual_haystack, "Failed asserting that <{$this->locator}>'s attribute <{$attribute_name}> does not contains <{$expected_needle}>.");
+    PHPUnit_Framework_Assert::assertNotContains($expected_missing_needle, $actual_haystack, "Failed asserting that <{$this->locator}>'s attribute <{$attribute_name}> does not contain <{$expected_missing_needle}>.");
   }
   
   // Will pass for "equivalent" CSS colors such as "#FFFFFF" and "white". Pass $canonicalize_colors = false to disable.

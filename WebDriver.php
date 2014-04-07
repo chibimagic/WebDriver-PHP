@@ -102,8 +102,8 @@ class WebDriver {
     WebDriver::LogDebug($full_response);
     WebDriver::LogDebug("=====");
     $error = curl_error($curl);
-    PHPUnit_Framework_Assert::assertEquals("", $error, "Curl error: $error\nMethod: $http_type\nURL: $full_url\n" . print_r($payload, true));
     curl_close($curl);
+    PHPUnit_Framework_Assert::assertEquals("", $error, "Curl error: $error\nMethod: $http_type\nURL: $full_url\n" . print_r($payload, true));
     $response_parts = explode("\r\n\r\n", $full_response, 2);
     $response['header'] = $response_parts[0];
     if (!empty($response_parts[1])) {

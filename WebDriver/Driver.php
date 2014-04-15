@@ -118,6 +118,9 @@ class WebDriver_Driver {
         PHPUnit_Framework_Assert::assertArrayHasKey($response_status_code, self::$status_codes, "Unknown status code $response_status_code returned from server.\n{$response['body']}");
         $response_info = $response_status_code . " - " . self::$status_codes[$response_status_code][0] . " - " . self::$status_codes[$response_status_code][1];
         $additional_info = isset($response_json['value']['message']) ? "Message: " . $response_json['value']['message'] : "Response: " . $response['body'];
+        if ($response_status_code == 7) {
+          throw new WebDriver_NoSuchElementException();
+        }
         if ($response_status_code == 10) {
           throw new WebDriver_StaleElementReferenceException();
         }
@@ -250,7 +253,7 @@ class WebDriver_Driver {
         $element->describe(); // Under certain conditions get_element returns cached information. This tests if the element is actually there.
       }
       $is_element_present = true;
-    } catch (Exception $e) {
+    } catch (WebDriver_NoSuchElementException $e) {
       $is_element_present = false;
     }
     return $is_element_present;

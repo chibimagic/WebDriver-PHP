@@ -6,6 +6,7 @@ require_once 'WebDriver/MockDriver.php';
 require_once 'WebDriver/WebElement.php';
 require_once 'WebDriver/MockElement.php';
 require_once 'WebDriver/FirefoxProfile.php';
+require_once 'WebDriver/NoSuchElementException.php';
 require_once 'WebDriver/StaleElementReferenceException.php';
 
 class SampleTest extends PHPUnit_Framework_TestCase {

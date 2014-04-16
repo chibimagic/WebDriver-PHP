@@ -119,7 +119,7 @@ class WebDriver_Driver {
         $response_info = $response_status_code . " - " . self::$status_codes[$response_status_code][0] . " - " . self::$status_codes[$response_status_code][1];
         $additional_info = isset($response_json['value']['message']) ? "Message: " . $response_json['value']['message'] : "Response: " . $response['body'];
         if ($response_status_code == 7) {
-          throw new WebDriver_NoSuchElementException();
+          throw new WebDriver_NoSuchElementException("Could not find element: " . print_r($payload, true));
         }
         if ($response_status_code == 10) {
           throw new WebDriver_StaleElementReferenceException();

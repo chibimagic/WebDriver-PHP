@@ -2,6 +2,7 @@
 
 class WebDriver {
   public static $ImplicitWaitMS = 0; // How long to wait for elements to appear on the page
+  public static $CurlConnectTimeoutSec = 30; // How long to wait to connect to the server
   public static $CurlTimeoutSec = 120; // How long to wait for the server's response to any single command
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/value
@@ -87,6 +88,7 @@ class WebDriver {
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($curl, CURLOPT_HEADER, TRUE);
     curl_setopt($curl, CURLOPT_HTTPHEADER, array('Expect:'));
+    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, WebDriver::$CurlConnectTimeoutSec);
     curl_setopt($curl, CURLOPT_TIMEOUT, WebDriver::$CurlTimeoutSec);
     if ($payload !== null && is_string($payload) && json_decode($payload) !== null) {
       curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));

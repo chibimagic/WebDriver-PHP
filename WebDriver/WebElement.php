@@ -17,6 +17,8 @@ class WebDriver_WebElement {
     } catch (WebDriver_StaleElementReferenceException $e) {
       $element_in_new_dom = $this->driver->get_element($this->locator);
       return $element_in_new_dom->execute($http_type, $relative_url, $payload);
+    } catch (WebDriver_ElementNotVisibleException $e) {
+      throw new WebDriver_ElementNotVisibleException($e->get_command(), $this->locator);
     }
   }
   

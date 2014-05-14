@@ -124,6 +124,9 @@ class WebDriver_Driver {
         if ($response_status_code == 10) {
           throw new WebDriver_StaleElementReferenceException();
         }
+        if ($response_status_code == 11) {
+          throw new WebDriver_ElementNotVisibleException($command_info);
+        }
         PHPUnit_Framework_Assert::assertEquals(0, $response_status_code, "Unsuccessful WebDriver command: $response_info\nCommand: $command_info\n$additional_info");
       }
     }

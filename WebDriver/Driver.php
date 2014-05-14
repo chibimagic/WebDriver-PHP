@@ -91,6 +91,10 @@ class WebDriver_Driver {
     return self::InitAtHost('localhost', $port, $browser, $additional_options);
   }
   
+  public function get_browser() {
+    return $this->browser;
+  }
+  
   public function running_at_sauce() {
     return (strpos($this->server_url, "saucelabs.com") !== false);
   }

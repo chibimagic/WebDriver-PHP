@@ -825,6 +825,11 @@ class WebDriver_Driver {
     PHPUnit_Framework_Assert::assertNotContains($expected_missing_string, $page_text, "Failed asserting that page text does not contain <$expected_missing_string>.\n$page_text");
   }
   
+  public function assert_cookie_value($name, $expected_value) {
+    $actual_value = WebDriver::WaitUntil(array($this, 'get_cookie'), array($name, 'value'), $expected_value);
+    PHPUnit_Framework_Assert::assertEquals($expected_value, $actual_value, "Failed asserting that cookie <$name> has value <$expected_value>.");
+  }
+  
   public function assert_alert_text($expected_text) {
     $text = WebDriver::WaitUntil(array($this, 'get_alert_text'), array(), $expected_text);
     PHPUnit_Framework_Assert::assertEquals($expected_text, $text, "Failed asserting that alert text is <$expected_text>.");

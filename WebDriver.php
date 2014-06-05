@@ -82,7 +82,7 @@ class WebDriver {
     return $actual;
   }
 
-  public static function Curl($http_type, $full_url, $payload = null, $escape_payload = true) {
+  public static function Curl($http_type, $full_url, $payload = null, $escape_payload = true, $cookies = array()) {
     $curl = curl_init($full_url);
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_type);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
@@ -98,6 +98,10 @@ class WebDriver {
         $payload = http_build_query($payload);
       }
       curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
+    }
+    if (!empty($cookies)) {
+      $cookie_string = http_build_query($cookies, '', '; ');
+      curl_setopt($curl, CURLOPT_COOKIE, $cookie_string);
     }
     WebDriver::LogDebug($http_type, $full_url, $payload);
     $full_response = curl_exec($curl);

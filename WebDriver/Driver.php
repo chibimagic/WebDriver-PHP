@@ -256,7 +256,7 @@ class WebDriver_Driver {
   public function is_element_present($locator) {
     try {
       $element = $this->get_element($locator);
-      if ($this->browser !== 'android') { // The android driver fails at this
+      if ($this->browser !== 'android' && $this->browser !== 'chrome') { // The android driver fails at this & chrome driver 2.0 does not implement this
         $element->describe(); // Under certain conditions get_element returns cached information. This tests if the element is actually there.
       }
       $is_element_present = true;

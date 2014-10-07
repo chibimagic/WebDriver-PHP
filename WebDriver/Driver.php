@@ -176,6 +176,11 @@ class WebDriver_Driver {
     return WebDriver::GetJSONValue($response);
   }
   
+  public function is_page_loaded() {
+    $state = $this->execute_js_sync("return document.readyState");
+    return $state == "complete";
+  }
+  
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/source
   public function get_source() {
     $response = $this->execute("GET", "/session/:sessionId/source");
@@ -787,6 +792,11 @@ class WebDriver_Driver {
       $title_matched = ($this->browser == 'internet explorer' && $actual_title == $expected_title . $ie_hash) || ($actual_title == $expected_title);
     } while (time() < $end_time && !$title_matched);
     PHPUnit_Framework_Assert::assertTrue($title_matched, "Failed asserting that <$actual_title> is <$expected_title> with optional hash <$ie_hash>.");
+  }
+  
+  public function assert_page_loaded() {
+    $loaded = WebDriver::WaitUntil(array($this, 'is_page_loaded'), array(), true);
+    PHPUnit_Framework_Assert::assertTrue($loaded, "Failed asserting that page loaded");
   }
   
   public function assert_element_present($element_locator) {

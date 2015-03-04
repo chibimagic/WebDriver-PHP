@@ -74,6 +74,18 @@ class WebDriver_Driver {
     }
     return new WebDriver_Driver("http://" . $sauce_username . ":" . $sauce_key . "@ondemand.saucelabs.com:80/wd/hub", $capabilities);
   }
+
+  public static function InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version = false, $additional_options = array()) {
+    $capabilities = array_merge(array(
+      'browserstack.debug' => true,
+      'platform' => strtoupper($os),
+      'browserName' => $browser
+    ), $additional_options);
+    if ($version) {
+      $capabilities["version"] = $version;
+    }
+    return new WebDriver_Driver("http://" . $browserstack_username . ":" . $browserstack_value . "@hub.browserstack.com/wd/hub", $capabilities);
+  }
   
   public static function InitAtHost($host, $port, $browser, $additional_options = array()) {
     $capabilities = array_merge(array(

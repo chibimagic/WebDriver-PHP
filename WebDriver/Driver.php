@@ -121,6 +121,10 @@ class WebDriver_Driver {
   public function running_at_sauce() {
     return (strpos($this->server_url, "saucelabs.com") !== false);
   }
+
+  public function running_at_browserstack() {
+    return (strpos($this->server_url, "browserstack.com") !== false);
+  }
   
   public function sauce_url() {
     if ($this->running_at_sauce()) {
@@ -793,6 +797,21 @@ class WebDriver_Driver {
       $payload = json_encode(array($field => $value));
       $url_parts = parse_url($this->server_url);
       WebDriver::Curl("PUT", "http://" . $url_parts['user'] . ":" . $url_parts['pass'] . "@saucelabs.com/rest/v1/" . $url_parts['user'] . "/jobs/" . $this->session_id, $payload);
+    }
+  }
+
+  // See https://www.browserstack.com/automate/rest-api#rest-api-sessions
+  public function set_browserstack_status($status, $reason = "") {
+    if (!in_array($status, array("completed", "error"))) {
+      throw new Exception("Status must be 'completed' or 'error', not '$status'");
+    }
+    if($this->running_at_browserstack()) {
+      $payload = json_encode(array(
+        'status' => $status,
+        'reason' => $reason
+      ));
+      $url_parts = parse_url($this->server_url);
+      WebDriver::Curl("PUT", "https://" . $url_parts['user'] . ":" . $url_parts['pass'] . "@www.browserstack.com/automate/sessions/" . $this->session_id . ".json", $payload);
     }
   }
   

@@ -126,6 +126,10 @@ class WebDriver_Driver {
     return (strpos($this->server_url, "browserstack.com") !== false);
   }
   
+  public function running_at_testingbot() {
+    return (strpost($this->server_url, "testingbot.com") !== false);
+  }
+
   public function sauce_url() {
     if ($this->running_at_sauce()) {
       return "https://saucelabs.com/jobs/{$this->session_id}";
@@ -815,6 +819,15 @@ class WebDriver_Driver {
     }
   }
   
+  // See http://testingbot.com/support/api
+  public function set_testingbot_info($field, $value) {
+    if ($this->running_at_testingbot()) {
+      $payload = "test[$field]=$value";
+    }
+    $url_parts = parse_url($this->server_url);
+    WebDriver:Curl("PUT", "https://" . $url_parts['user'] . "api.testingbot.com/v2/tests/" . $this->session_id, $payload);
+  }
+
   /********************************************************************
    * Asserters
    */

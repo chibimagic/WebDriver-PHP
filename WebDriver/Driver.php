@@ -127,7 +127,7 @@ class WebDriver_Driver {
   }
   
   public function running_at_testingbot() {
-    return (strpost($this->server_url, "testingbot.com") !== false);
+    return (strpos($this->server_url, "testingbot.com") !== false);
   }
 
   public function sauce_url() {

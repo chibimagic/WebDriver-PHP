@@ -823,9 +823,9 @@ class WebDriver_Driver {
   public function set_testingbot_info($field, $value) {
     if ($this->running_at_testingbot()) {
       $payload = "test[$field]=$value";
+      $url_parts = parse_url($this->server_url);
+      WebDriver::Curl("PUT", "https://" . $url_parts['user'] . "api.testingbot.com/v2/tests/" . $this->session_id, $payload);
     }
-    $url_parts = parse_url($this->server_url);
-    WebDriver::Curl("PUT", "https://" . $url_parts['user'] . "api.testingbot.com/v2/tests/" . $this->session_id, $payload);
   }
 
   /********************************************************************

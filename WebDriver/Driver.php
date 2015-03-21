@@ -391,6 +391,12 @@ class WebDriver_Driver {
     return $status_strings[$status_code];
   }
 
+  // See http://testingbot.com/support/api#singletest
+  public function get_testingbot_info() {
+    $response = WebDriver::Curl("GET", "https://" . kTestingBotAPIKey . "@api.testingbot.com/v1/tests/" . $this->session_id);
+    return json_decode(trim($response['body']), true);
+  }
+
   /********************************************************************
    * Setters
    */

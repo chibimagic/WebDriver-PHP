@@ -138,6 +138,17 @@ class WebDriver_Driver {
     }
   }
   
+  public function browserstack_info() {
+    if ($this->running_at_browserstack()) {
+      $url_parts = parse_url($this->server_url);
+      $response = WebDriver::Curl("GET", "https://" . $url_parts['user'] . ":" . $url_parts['pass'] . "@www.browserstack.com/automate/sessions/" . $this->session_id . ".json");
+      $result = json_decode(trim($response['body']), true);
+      return $result['automation_session'];
+    } else {
+      return false;
+    }
+  }
+
   public function execute($http_type, $relative_url, $payload = null) {
     if ($payload !== null) {
       $payload = json_encode($payload);

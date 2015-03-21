@@ -825,7 +825,7 @@ class WebDriver_Driver {
       $payload = "test[$field]=$value";
     }
     $url_parts = parse_url($this->server_url);
-    WebDriver:Curl("PUT", "https://" . $url_parts['user'] . "api.testingbot.com/v2/tests/" . $this->session_id, $payload);
+    WebDriver::Curl("PUT", "https://" . $url_parts['user'] . "api.testingbot.com/v2/tests/" . $this->session_id, $payload);
   }
 
   /********************************************************************

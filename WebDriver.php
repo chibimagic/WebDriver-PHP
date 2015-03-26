@@ -87,12 +87,13 @@ class WebDriver {
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_type);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($curl, CURLOPT_HEADER, TRUE);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Expect:'));
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, WebDriver::$CurlConnectTimeoutSec);
     curl_setopt($curl, CURLOPT_TIMEOUT, WebDriver::$CurlTimeoutSec);
+    $headers = array('Expect:');
     if ($payload !== null && is_string($payload) && json_decode($payload) !== null) {
-      curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+      $headers[] = 'Content-Type: application/json';
     }
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
     if (($http_type === "POST" || $http_type === "PUT") && $payload !== null) {
       if ($escape_payload && (is_array($payload) || is_object($payload))) {
         $payload = http_build_query($payload);

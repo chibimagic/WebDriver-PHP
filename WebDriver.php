@@ -86,6 +86,7 @@ class WebDriver {
     $curl = curl_init($full_url);
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_type);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($curl, CURLINFO_HEADER_OUT, TRUE);
     curl_setopt($curl, CURLOPT_HEADER, TRUE);
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, WebDriver::$CurlConnectTimeoutSec);
     curl_setopt($curl, CURLOPT_TIMEOUT, WebDriver::$CurlTimeoutSec);
@@ -104,8 +105,11 @@ class WebDriver {
       $cookie_string = http_build_query($cookies, '', '; ');
       curl_setopt($curl, CURLOPT_COOKIE, $cookie_string);
     }
-    WebDriver::LogDebug($http_type, $full_url, $payload);
     $full_response = curl_exec($curl);
+    $request_header = curl_getinfo($curl, CURLINFO_HEADER_OUT);
+    WebDriver::LogDebug($request_header);
+    WebDriver::LogDebug($payload);
+    WebDriver::LogDebug("-");
     WebDriver::LogDebug($full_response);
     WebDriver::LogDebug("=====");
     $error = curl_error($curl);

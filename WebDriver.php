@@ -90,16 +90,18 @@ class WebDriver {
     curl_setopt($curl, CURLOPT_HEADER, TRUE);
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, WebDriver::$CurlConnectTimeoutSec);
     curl_setopt($curl, CURLOPT_TIMEOUT, WebDriver::$CurlTimeoutSec);
-    $headers = array('Expect:', 'Accept: application/json');
-    if ($payload !== null && is_string($payload) && json_decode($payload) !== null) {
-      $headers[] = 'Content-Type: application/json; charset=utf-8';
-    }
     if (($http_type === "POST" || $http_type === "PUT") && $payload !== null) {
       if ($escape_payload && (is_array($payload) || is_object($payload))) {
         $payload = http_build_query($payload);
       }
-      $headers[] = 'Content-Length: ' . strlen($payload);
       curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
+    }
+    $headers = array('Expect:', 'Accept: application/json');
+    if ($payload !== null && is_string($payload) && json_decode($payload) !== null) {
+      $headers[] = 'Content-Type: application/json; charset=utf-8';
+    }
+    if (is_string($payload)) {
+      $headers[] = 'Content-Length: ' . strlen($payload);
     }
     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
     if (!empty($cookies)) {

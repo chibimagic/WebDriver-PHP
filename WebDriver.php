@@ -91,6 +91,9 @@ class WebDriver {
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, WebDriver::$CurlConnectTimeoutSec);
     curl_setopt($curl, CURLOPT_TIMEOUT, WebDriver::$CurlTimeoutSec);
     $headers = array('Expect:');
+    if ($http_type === "POST" || $http_type === "PUT") {
+      $headers[] = 'Content-Length: ' . strlen($payload);
+    }
     if ($payload !== null && is_string($payload) && json_decode($payload) !== null) {
       $headers[] = 'Content-Type: application/json; charset=utf-8';
     }

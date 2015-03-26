@@ -90,7 +90,7 @@ class WebDriver {
     curl_setopt($curl, CURLOPT_HEADER, TRUE);
     curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, WebDriver::$CurlConnectTimeoutSec);
     curl_setopt($curl, CURLOPT_TIMEOUT, WebDriver::$CurlTimeoutSec);
-    $headers = array('Expect:');
+    $headers = array('Expect:', 'Accept: application/json');
     if ($http_type === "POST" || $http_type === "PUT") {
       $headers[] = 'Content-Length: ' . strlen($payload);
     }

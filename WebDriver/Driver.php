@@ -76,15 +76,20 @@ class WebDriver_Driver {
   }
 
   public static function InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version = false, $additional_options = array()) {
-    $capabilities = array_merge(array(
-      'browserstack.debug' => true,
-      'platform' => strtoupper($os),
-      'browserName' => $browser
-    ), $additional_options);
-    if ($version) {
-      $capabilities["version"] = $version;
+    try {
+      $capabilities = array_merge(array(
+        'browserstack.debug' => true,
+        'platform' => strtoupper($os),
+        'browserName' => $browser
+      ), $additional_options);
+      if ($version) {
+        $capabilities["version"] = $version;
+      }
+      return new WebDriver_Driver("http://" . $browserstack_username . ":" . $browserstack_value . "@hub.browserstack.com/wd/hub", $capabilities);
+    } catch (WebDriver_OverParallelLimitException $e) {
+      sleep(1);
+      return WebDriver_Driver::InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version, $additional_options);
     }
-    return new WebDriver_Driver("http://" . $browserstack_username . ":" . $browserstack_value . "@hub.browserstack.com/wd/hub", $capabilities);
   }
 
   public static function InitAtTestingBot($testingbot_apikey, $testbot_secret, $os, $browser, $version = false, $additional_options = array()) {
@@ -172,6 +177,9 @@ class WebDriver_Driver {
         }
         if ($response_status_code == 11) {
           throw new WebDriver_ElementNotVisibleException($command_info);
+        }
+        if ($response_status_code == 13 && strpos($response_json['value']['message'], 'Please upgrade to add more parallel sessions') !== false) {
+          throw new WebDriver_OverParallelLimitException();
         }
         PHPUnit_Framework_Assert::assertEquals(0, $response_status_code, "Unsuccessful WebDriver command: $response_info\nCommand: $command_info\n$additional_info");
       }

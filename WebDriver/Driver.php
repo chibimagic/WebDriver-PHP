@@ -75,7 +75,10 @@ class WebDriver_Driver {
     return new WebDriver_Driver("http://" . $sauce_username . ":" . $sauce_key . "@ondemand.saucelabs.com:80/wd/hub", $capabilities);
   }
 
-  public static function InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version = false, $additional_options = array(), $starting_time = time(), $attempt = 1) {
+  public static function InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version = false, $additional_options = array(), $starting_time = null, $attempt = 1) {
+    if (!$starting_time) {
+      $starting_time = time();
+    }
     try {
       $capabilities = array_merge(array(
         'browserstack.debug' => true,

@@ -75,7 +75,7 @@ class WebDriver_Driver {
     return new WebDriver_Driver("http://" . $sauce_username . ":" . $sauce_key . "@ondemand.saucelabs.com:80/wd/hub", $capabilities);
   }
 
-  public static function InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version = false, $additional_options = array()) {
+  public static function InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version = false, $additional_options = array(), $starting_time = time(), $attempt = 1) {
     try {
       $capabilities = array_merge(array(
         'browserstack.debug' => true,
@@ -87,8 +87,10 @@ class WebDriver_Driver {
       }
       return new WebDriver_Driver("http://" . $browserstack_username . ":" . $browserstack_value . "@hub.browserstack.com/wd/hub", $capabilities);
     } catch (WebDriver_OverParallelLimitException $e) {
+      PHPUnit_Framework_Assert::assertTrue(time() < $starting_time + WebDriver::$BrowserStackMaxSeconds);
+      PHPUnit_Framework_Assert::assertTrue($attempt < WebDriver::$BrowserStackMaxAttempts);
       sleep(1);
-      return WebDriver_Driver::InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version, $additional_options);
+      return WebDriver_Driver::InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version, $additional_options, $starting_time, $attempt + 1);
     }
   }
 

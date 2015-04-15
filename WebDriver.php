@@ -4,6 +4,8 @@ class WebDriver {
   public static $ImplicitWaitMS = 0; // How long to wait for elements to appear on the page
   public static $CurlConnectTimeoutSec = 30; // How long to wait to connect to the server
   public static $CurlTimeoutSec = 120; // How long to wait for the server's response to any single command
+  public static $BrowserStackMaxAttempts = 100; // Maximum number of times to try to start a session at BrowserStack
+  public static $BrowserStackMaxSeconds = 120; // Maximum number of seconds to try to start a session at BrowserStack
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/value
   // Example: $my_web_element->send_keys(WebDriver::ReturnKey());

@@ -92,7 +92,7 @@ class WebDriver_Driver {
     } catch (WebDriver_OverParallelLimitException $e) {
       PHPUnit_Framework_Assert::assertTrue(time() < $starting_time + WebDriver::$BrowserStackMaxSeconds);
       PHPUnit_Framework_Assert::assertTrue($attempt < WebDriver::$BrowserStackMaxAttempts);
-      sleep(1);
+      sleep(WebDriver::$BrowserStackWaitSeconds);
       return WebDriver_Driver::InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version, $additional_options, $starting_time, $attempt + 1);
     }
   }

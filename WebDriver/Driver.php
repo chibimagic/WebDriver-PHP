@@ -90,8 +90,8 @@ class WebDriver_Driver {
       }
       return new WebDriver_Driver("http://" . $browserstack_username . ":" . $browserstack_value . "@hub.browserstack.com/wd/hub", $capabilities);
     } catch (WebDriver_OverParallelLimitException $e) {
-      PHPUnit_Framework_Assert::assertTrue(time() < $starting_time + WebDriver::$BrowserStackMaxSeconds);
-      PHPUnit_Framework_Assert::assertTrue($attempt < WebDriver::$BrowserStackMaxAttempts);
+      PHPUnit_Framework_Assert::assertTrue(time() < $starting_time + WebDriver::$BrowserStackMaxSeconds, "Reached maximum BrowserStack attempt seconds: " . WebDriver::$BrowserStackMaxSeconds);
+      PHPUnit_Framework_Assert::assertTrue($attempt < WebDriver::$BrowserStackMaxAttempts, "Reached maximum BrowserStack attempt number: " . WebDriver::$BrowserStackMaxAttempts);
       sleep(WebDriver::$BrowserStackWaitSeconds);
       return WebDriver_Driver::InitAtBrowserStack($browserstack_username, $browserstack_value, $os, $browser, $version, $additional_options, $starting_time, $attempt + 1);
     }

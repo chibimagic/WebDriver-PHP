@@ -532,6 +532,8 @@ class WebDriver_Driver {
   public function select_frame($identifier = null) {
     if ($identifier !== null) {
       $this->get_element($identifier); // POST /session/:sessionId/frame does not use implicit wait but POST /session/:sessionId/element does
+      $locator = WebDriver::ParseLocator($identifier);
+      $identifier = $locator['value'];
     }
     $payload = array("id" => $identifier);
     $this->execute("POST", "/session/:sessionId/frame", $payload);

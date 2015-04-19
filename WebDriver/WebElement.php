@@ -253,16 +253,16 @@ class WebDriver_WebElement {
    */
 
   public function select_label($label) {
-    $this->get_next_element("//option[text()=" . WebDriver::QuoteXPath($label) . "]")->select();
+    $this->get_next_element("xpath=option[text()=" . WebDriver::QuoteXPath($label) . "]")->select();
   }
   
   public function select_value($value) {
-    $this->get_next_element("//option[@value=" . WebDriver::QuoteXPath($value) . "]")->select();
+    $this->get_next_element("xpath=option[@value=" . WebDriver::QuoteXPath($value) . "]")->select();
   }
   
   // 1-based index
   public function select_index($index) {
-    $this->get_next_element("//option[" . $index . "]")->select();
+    $this->get_next_element("xpath=option[" . $index . "]")->select();
   }
   
   public function select_random() {

@@ -1,0 +1,15 @@
+{
+    "name": "chibimagic/webdriver-php",
+    "type": "library",
+    "description": "PHP bindings for WebDriver (Selenium 2 API).",
+    "keywords": [
+        "Selenium 2",
+        "WebDriver"
+    ],
+    "autoload": {
+        "psr-0": {
+            "WebDriver": ""
+        }
+    }
+}
+

@@ -10,7 +10,7 @@ For more information, see:
 
 # Usage
 
-See the included SampleTest.php. Start up the Selenium 2 standalone server (http://code.google.com/p/selenium/downloads/list) and run the test with:
+See the included SampleTest.php. Start up the Selenium 2 standalone server (http://selenium-release.storage.googleapis.com/index.html) and run the test with:
 
     phpunit SampleTest.php
 

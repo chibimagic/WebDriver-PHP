@@ -7,6 +7,7 @@ class WebDriver {
   public static $BrowserStackMaxAttempts = 100; // Maximum number of times to try to start a session at BrowserStack
   public static $BrowserStackMaxSeconds = 120; // Maximum number of seconds to try to start a session at BrowserStack
   public static $BrowserStackWaitSeconds = 5; // Seconds to wait in between attempts to start a session at BrowserStack
+  protected static $curl;
   
   // See http://code.google.com/p/selenium/wiki/JsonWireProtocol#/session/:sessionId/element/:id/value
   // Example: $my_web_element->send_keys(WebDriver::ReturnKey());
@@ -86,18 +87,19 @@ class WebDriver {
   }
 
   public static function Curl($http_type, $full_url, $payload = null, $escape_payload = true, $cookies = array()) {
-    $curl = curl_init($full_url);
-    curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $http_type);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($curl, CURLINFO_HEADER_OUT, TRUE);
-    curl_setopt($curl, CURLOPT_HEADER, TRUE);
-    curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, WebDriver::$CurlConnectTimeoutSec);
-    curl_setopt($curl, CURLOPT_TIMEOUT, WebDriver::$CurlTimeoutSec);
+    if(!self::$curl) self::$curl = curl_init();
+    curl_setopt(self::$curl, CURLOPT_URL, $full_url);
+    curl_setopt(self::$curl, CURLOPT_CUSTOMREQUEST, $http_type);
+    curl_setopt(self::$curl, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt(self::$curl, CURLINFO_HEADER_OUT, TRUE);
+    curl_setopt(self::$curl, CURLOPT_HEADER, TRUE);
+    curl_setopt(self::$curl, CURLOPT_CONNECTTIMEOUT, WebDriver::$CurlConnectTimeoutSec);
+    curl_setopt(self::$curl, CURLOPT_TIMEOUT, WebDriver::$CurlTimeoutSec);
     if (($http_type === "POST" || $http_type === "PUT") && $payload !== null) {
       if ($escape_payload && (is_array($payload) || is_object($payload))) {
         $payload = http_build_query($payload);
       }
-      curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
+      curl_setopt(self::$curl, CURLOPT_POSTFIELDS, $payload);
     }
     $headers = array('Expect:', 'Accept: application/json');
     if ($payload !== null && is_string($payload) && json_decode($payload) !== null) {
@@ -106,20 +108,19 @@ class WebDriver {
     if (is_string($payload)) {
       $headers[] = 'Content-Length: ' . strlen($payload);
     }
-    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt(self::$curl, CURLOPT_HTTPHEADER, $headers);
     if (!empty($cookies)) {
       $cookie_string = http_build_query($cookies, '', '; ');
-      curl_setopt($curl, CURLOPT_COOKIE, $cookie_string);
+      curl_setopt(self::$curl, CURLOPT_COOKIE, $cookie_string);
     }
-    $full_response = curl_exec($curl);
-    $request_header = curl_getinfo($curl, CURLINFO_HEADER_OUT);
+    $full_response = curl_exec(self::$curl);
+    $request_header = curl_getinfo(self::$curl, CURLINFO_HEADER_OUT);
     WebDriver::LogDebug($request_header);
     WebDriver::LogDebug($payload);
     WebDriver::LogDebug("-");
     WebDriver::LogDebug($full_response);
     WebDriver::LogDebug("=====");
-    $error = curl_error($curl);
-    curl_close($curl);
+    $error = curl_error(self::$curl);
     PHPUnit_Framework_Assert::assertEquals("", $error, "Curl error: $error\nMethod: $http_type\nURL: $full_url\n" . print_r($payload, true));
     $response_parts = explode("\r\n\r\n", $full_response, 2);
     $response['header'] = $response_parts[0];
